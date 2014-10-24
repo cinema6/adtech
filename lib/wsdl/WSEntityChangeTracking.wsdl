@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    name="de.adtech.webservices.helios.lowLevel.EntityChangeTracking.WSEntityChangeTracking"
+    targetNamespace="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:map="http://systinet.com/mapping/"
+    xmlns:ns0="http://systinet.com/xsd/SchemaTypes/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/">
+    <types>
+        <xsd:schema elementFormDefault="qualified"
+            targetNamespace="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/"
+            xmlns:ns0="http://systinet.com/xsd/SchemaTypes/"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:complexType name="WSEntityChangeTrackingException">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <map:java-type
+                        name="de.adtech.webservices.helios.lowLevel.EntityChangeTracking.WSEntityChangeTrackingException"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="message" nillable="true"
+                        type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+        <xsd:schema elementFormDefault="qualified"
+            targetNamespace="http://systinet.com/xsd/SchemaTypes/"
+            xmlns:map="http://systinet.com/mapping/"
+            xmlns:ns0="http://systinet.com/xsd/SchemaTypes/"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns:tns="http://systinet.com/xsd/SchemaTypes/"
+            xmlns:xns4="http://systinet.com/wsdl/de/adtech/helios/"
+            xmlns:xns5="http://systinet.com/wsdl/default/"
+            xmlns:xns6="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import
+            namespace="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/"/>
+            <xsd:import namespace="http://systinet.com/wsdl/default/"/>
+            <xsd:import namespace="http://systinet.com/wsdl/de/adtech/helios/"/>
+            <xsd:element name="ANDExpression_Response" nillable="true"
+                type="xns4:ANDExpression"/>
+            <xsd:element name="AttributeOperatorValueExpression_Response"
+                nillable="true" type="xns4:AttributeOperatorValueExpression"/>
+            <xsd:element name="entityName" nillable="true" type="xsd:string"/>
+            <xsd:element name="since" nillable="true" type="xsd:dateTime"/>
+            <xsd:element name="filters" nillable="true"
+                type="xns4:BoolExpression"/>
+            <xsd:element name="ArrayOflong_Response" nillable="true"
+                type="xns5:ArrayOflong"/>
+            <xsd:element name="WSEntityChangeTrackingException" nillable="true"
+                type="xns6:WSEntityChangeTrackingException"/>
+            <xsd:element name="NOTExpression_Response" nillable="true"
+                type="xns4:NOTExpression"/>
+            <xsd:element name="ORExpression_Response" nillable="true"
+                type="xns4:ORExpression"/>
+        </xsd:schema>
+        <xsd:schema elementFormDefault="qualified"
+            targetNamespace="http://systinet.com/wsdl/default/"
+            xmlns:ns0="http://systinet.com/xsd/SchemaTypes/"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns:tns="http://systinet.com/wsdl/default/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:complexType name="ArrayOflong">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <map:java-type name="[J"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="long"
+                        type="xsd:long"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+        <xsd:schema elementFormDefault="qualified"
+            targetNamespace="http://systinet.com/containers/literal/ms.net"
+            xmlns:map="http://systinet.com/mapping/"
+            xmlns:ns0="http://systinet.com/xsd/SchemaTypes/"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns:tns="http://systinet.com/containers/literal/ms.net"
+            xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:complexType name="Collection">
+                <xsd:sequence>
+                    <xsd:element name="Items" type="tns:ArrayOfAnyType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="List">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Collection"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayList">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:List"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="LinkedList">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:List"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="Vector">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:List"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="Set">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Collection"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="HashSet">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Set"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="SortedSet">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Set"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="TreeSet">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:SortedSet"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="Map">
+                <xsd:sequence>
+                    <xsd:element name="Keys" type="tns:ArrayOfAnyType"/>
+                    <xsd:element name="Values" type="tns:ArrayOfAnyType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Hashtable">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Map"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="Properties">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Hashtable"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="HashMap">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Map"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="SortedMap">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:Map"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="TreeMap">
+                <xsd:complexContent mixed="false">
+                    <xsd:extension base="tns:SortedMap"/>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="Iterator">
+                <xsd:sequence>
+                    <xsd:element name="Data" type="tns:ArrayOfAnyType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Enumeration">
+                <xsd:sequence>
+                    <xsd:element name="Data" type="tns:ArrayOfAnyType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfAnyType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="Item"
+                        nillable="true"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+        <xsd:schema elementFormDefault="qualified"
+            targetNamespace="http://systinet.com/wsdl/de/adtech/helios/"
+            xmlns:ns0="http://systinet.com/xsd/SchemaTypes/"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns:tns="http://systinet.com/wsdl/de/adtech/helios/"
+            xmlns:xns5="http://systinet.com/containers/literal/ms.net"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import
+            namespace="http://systinet.com/containers/literal/ms.net"/>
+            <xsd:complexType name="ANDExpression">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <map:java-type name="de.adtech.helios.ANDExpression"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:complexContent>
+                    <xsd:extension base="tns:BoolExpression">
+                        <xsd:sequence/>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="BoolExpression">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <map:java-type name="de.adtech.helios.BoolExpression"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:sequence>
+                    <xsd:element name="expressions" nillable="true"
+                        type="xns5:Vector"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="AttributeOperatorValueExpression">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <map:java-type
+                        name="de.adtech.helios.AttributeOperatorValueExpression"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:complexContent>
+                    <xsd:extension base="tns:BoolExpression">
+                        <xsd:sequence>
+                            <xsd:element name="attribute" nillable="true"
+                                type="xsd:string"/>
+                            <xsd:element name="operator" nillable="true"
+                                type="xsd:string"/>
+                            <xsd:element name="value" nillable="true"/>
+                        </xsd:sequence>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="NOTExpression">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <map:java-type name="de.adtech.helios.NOTExpression"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:complexContent>
+                    <xsd:extension base="tns:BoolExpression">
+                        <xsd:sequence/>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="ORExpression">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <map:java-type name="de.adtech.helios.ORExpression"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+                <xsd:complexContent>
+                    <xsd:extension base="tns:BoolExpression">
+                        <xsd:sequence/>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+    <message name="WSEntityChangeTrackingException">
+        <part element="ns0:WSEntityChangeTrackingException"
+            name="WSEntityChangeTrackingException"/>
+    </message>
+    <message name="WSEntityChangeTracking_getAE_Request_Soap"/>
+    <message name="WSEntityChangeTracking_getAE_Response_Soap">
+        <part element="ns0:ANDExpression_Response" name="response"/>
+    </message>
+    <message name="WSEntityChangeTracking_getAOVE_Request_Soap"/>
+    <message name="WSEntityChangeTracking_getAOVE_Response_Soap">
+        <part element="ns0:AttributeOperatorValueExpression_Response"
+            name="response"/>
+    </message>
+    <message name="WSEntityChangeTracking_getChangedEntityIds_Request_Soap">
+        <part element="ns0:entityName" name="entityName"/>
+        <part element="ns0:since" name="since"/>
+        <part element="ns0:filters" name="filters"/>
+    </message>
+    <message name="WSEntityChangeTracking_getChangedEntityIds_Response_Soap">
+        <part element="ns0:ArrayOflong_Response" name="response"/>
+    </message>
+    <message name="WSEntityChangeTracking_getNE_Request_Soap"/>
+    <message name="WSEntityChangeTracking_getNE_Response_Soap">
+        <part element="ns0:NOTExpression_Response" name="response"/>
+    </message>
+    <message name="WSEntityChangeTracking_getOE_Request_Soap"/>
+    <message name="WSEntityChangeTracking_getOE_Response_Soap">
+        <part element="ns0:ORExpression_Response" name="response"/>
+    </message>
+    <portType name="WSEntityChangeTracking">
+        <operation name="getAE" parameterOrder="">
+            <input message="tns:WSEntityChangeTracking_getAE_Request_Soap"/>
+            <output message="tns:WSEntityChangeTracking_getAE_Response_Soap"/>
+        </operation>
+        <operation name="getAOVE" parameterOrder="">
+            <input message="tns:WSEntityChangeTracking_getAOVE_Request_Soap"/>
+            <output message="tns:WSEntityChangeTracking_getAOVE_Response_Soap"/>
+        </operation>
+        <operation name="getChangedEntityIds"
+            parameterOrder="entityName since filters">
+            <input
+            message="tns:WSEntityChangeTracking_getChangedEntityIds_Request_Soap"/>
+            <output
+            message="tns:WSEntityChangeTracking_getChangedEntityIds_Response_Soap"/>
+            <fault message="tns:WSEntityChangeTrackingException"
+                name="WSEntityChangeTrackingException"/>
+        </operation>
+        <operation name="getNE" parameterOrder="">
+            <input message="tns:WSEntityChangeTracking_getNE_Request_Soap"/>
+            <output message="tns:WSEntityChangeTracking_getNE_Response_Soap"/>
+        </operation>
+        <operation name="getOE" parameterOrder="">
+            <input message="tns:WSEntityChangeTracking_getOE_Request_Soap"/>
+            <output message="tns:WSEntityChangeTracking_getOE_Response_Soap"/>
+        </operation>
+    </portType>
+    <binding name="WSEntityChangeTracking" type="tns:WSEntityChangeTracking">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getAE">
+            <map:java-operation name="getAE"
+                signature="KClMZGUvYWR0ZWNoL2hlbGlvcy9BTkRFeHByZXNzaW9uOw=="
+                wsiAttachments="true"/>
+            <soap:operation
+                soapAction="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/WSEntityChangeTracking#getAE?KClMZGUvYWR0ZWNoL2hlbGlvcy9BTkRFeHByZXNzaW9uOw=="
+                style="document"/>
+            <input>
+                <soap:body parts="" use="literal"/>
+            </input>
+            <output>
+                <soap:body parts="response" use="literal"/>
+            </output>
+        </operation>
+        <operation name="getAOVE">
+            <map:java-operation name="getAOVE"
+                signature="KClMZGUvYWR0ZWNoL2hlbGlvcy9BdHRyaWJ1dGVPcGVyYXRvclZhbHVlRXhwcmVzc2lvbjs="
+                wsiAttachments="true"/>
+            <soap:operation
+                soapAction="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/WSEntityChangeTracking#getAOVE?KClMZGUvYWR0ZWNoL2hlbGlvcy9BdHRyaWJ1dGVPcGVyYXRvclZhbHVlRXhwcmVzc2lvbjs="
+                style="document"/>
+            <input>
+                <soap:body parts="" use="literal"/>
+            </input>
+            <output>
+                <soap:body parts="response" use="literal"/>
+            </output>
+        </operation>
+        <operation name="getChangedEntityIds">
+            <map:java-operation name="getChangedEntityIds"
+                signature="KExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL3V0aWwvRGF0ZTtMZGUvYWR0ZWNoL2hlbGlvcy9Cb29sRXhwcmVzc2lvbjspW0o="
+                wsiAttachments="true">
+                <map:fault
+                    java-type="de.adtech.webservices.helios.lowLevel.EntityChangeTracking.WSEntityChangeTrackingException"
+                    name="WSEntityChangeTrackingException"/>
+            </map:java-operation>
+            <soap:operation
+                soapAction="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/WSEntityChangeTracking#getChangedEntityIds?KExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL3V0aWwvRGF0ZTtMZGUvYWR0ZWNoL2hlbGlvcy9Cb29sRXhwcmVzc2lvbjspW0o="
+                style="document"/>
+            <input>
+                <soap:body parts="entityName since filters" use="literal"/>
+            </input>
+            <output>
+                <soap:body parts="response" use="literal"/>
+            </output>
+            <fault name="WSEntityChangeTrackingException">
+                <soap:fault name="WSEntityChangeTrackingException"
+                    use="literal"/>
+            </fault>
+        </operation>
+        <operation name="getNE">
+            <map:java-operation name="getNE"
+                signature="KClMZGUvYWR0ZWNoL2hlbGlvcy9OT1RFeHByZXNzaW9uOw=="
+                wsiAttachments="true"/>
+            <soap:operation
+                soapAction="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/WSEntityChangeTracking#getNE?KClMZGUvYWR0ZWNoL2hlbGlvcy9OT1RFeHByZXNzaW9uOw=="
+                style="document"/>
+            <input>
+                <soap:body parts="" use="literal"/>
+            </input>
+            <output>
+                <soap:body parts="response" use="literal"/>
+            </output>
+        </operation>
+        <operation name="getOE">
+            <map:java-operation name="getOE"
+                signature="KClMZGUvYWR0ZWNoL2hlbGlvcy9PUkV4cHJlc3Npb247"
+                wsiAttachments="true"/>
+            <soap:operation
+                soapAction="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/EntityChangeTracking/WSEntityChangeTracking#getOE?KClMZGUvYWR0ZWNoL2hlbGlvcy9PUkV4cHJlc3Npb247"
+                style="document"/>
+            <input>
+                <soap:body parts="" use="literal"/>
+            </input>
+            <output>
+                <soap:body parts="response" use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="WSEntityChangeTracking">
+        <port binding="tns:WSEntityChangeTracking"
+            name="WSEntityChangeTracking">
+            <soap:address
+            location="http://10.168.204.33:6060/WSEntityChangeTracking/"/>
+        </port>
+    </service>
+</definitions>
