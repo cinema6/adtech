@@ -14,6 +14,7 @@ module.exports = function(grunt) {
             'all': [
                 __dirname + '/bin/{,*/}*.js',
                 __dirname + '/lib/{,*/}*.js',
+                __dirname + 'index.js',
                 __filename
             ]
         },

@@ -7,11 +7,13 @@ describe('banner',function(){
         q            = require('q');
         resolveSpy   = jasmine.createSpy('resolve');
         rejectSpy    = jasmine.createSpy('reject');
-
-        spyOn(mockSUtils,'createSoapSSLClient');
     });
 
     describe('createClient',function(){
+        beforeEach(function(){
+            spyOn(mockSUtils,'createSoapSSLClient');
+        });
+
         it('should resolve with a client if succeeds',function(done){
             var client = {}, key = {}, cert = {};
             mockSUtils.createSoapSSLClient.andReturn(q(client));
@@ -22,7 +24,7 @@ describe('banner',function(){
                     expect(rejectSpy).not.toHaveBeenCalled(); 
 
                     var args = mockSUtils.createSoapSSLClient.calls[0].args;
-                    expect(args[0]).toEqual('./wsdl/WSBannerAdmin_v13');
+                    expect(args[0]).toMatch('./wsdl/WSBannerAdmin_v13.wsdl');
                     expect(args[1]).toEqual({
                         strict : true,
                         endpoint :'https://ws.us-ec.adtechus.com/WSBannerAdmin_v13/'
@@ -59,9 +61,11 @@ describe('banner',function(){
 
             mockClient.createBanner.andCallFake(function(opts,cb){
                 process.nextTick(function(){
-                    cb(null,{});
+                    cb(null,[{ response : {}  }]);
                 });
             });
+            
+            spyOn(mockSUtils,'processResponse');
         });
 
         it('maps parameters to parameter properties',function(done){
@@ -105,7 +109,30 @@ describe('banner',function(){
                 })
                 .done(done);
         });
+    });
+    
+    describe('createAdmin', function(){
+        beforeEach(function(){
+            spyOn(mockSUtils,'makeAdmin');
+        });
 
-
+        it('uses soaputils makeAdmin to create admin',function(done){
+            var mockKey = {}, mockCert = {};
+            mockSUtils.makeAdmin.andReturn(q({}));
+            
+            banner.createAdmin(mockKey,mockCert)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    var args = mockSUtils.makeAdmin.calls[0].args;
+                    expect(args[0]).toEqual(mockKey);
+                    expect(args[1]).toEqual(mockCert);
+                    expect(args[2]).toEqual(banner);
+                    expect(args[3]).toEqual(['createBanner']);
+                })
+                .done(done);
+        });
     });
 });
