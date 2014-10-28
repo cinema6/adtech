@@ -1,19 +1,32 @@
 describe('index',function(){
-    var flush = true, index, banner;
+    var once = true, index, banner, website;
     beforeEach(function(){
-        if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
-        banner      = require('../../lib/banner');
-        constants   = require('../../lib/constants');
-        spyOn(banner,'createAdmin');
-
-
-        index   = require('../../index.js');
+        if (once) { 
+            for (var m in require.cache){ delete require.cache[m]; }
+            banner      = require('../../lib/banner');
+            website     = require('../../lib/website');
+            constants   = require('../../lib/constants');
+            spyOn(banner,'createAdmin');
+            spyOn(website,'createAdmin');
+            index   = require('../../index.js');
+        }
     });
 
     describe('create_xxx_Admin',function(){
         it('createBannerAdmin is proxied',function(){
             index.createBannerAdmin();
             expect(banner.createAdmin).toHaveBeenCalled();
+        });
+        
+        it('createWebsiteAdmin is proxied',function(){
+            index.createWebsiteAdmin();
+            expect(website.createAdmin).toHaveBeenCalled();
+        });
+    });
+
+    describe('types',function(){
+        it('AOVE',function(){
+            expect(index.AOVE).toBeDefined();
         });
     });
 

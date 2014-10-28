@@ -41,5 +41,5 @@ adtech.createBannerAdmin()
     console.log('Created banner:',banner);
 })
 .catch(function(err){
-    console.log('Error:',err);
+    console.log('Error:',JSON.stringify(err,null,3));
 });

@@ -8,6 +8,43 @@ describe('soaputils',function(){
         rejectSpy  = jasmine.createSpy('reject');
     });
 
+    describe('isEmpty', function(){
+        it('returns true if the object is empty',function(){
+            expect(soapUtils.isEmpty({})).toEqual(true);
+        });
+
+        it('returns true if the object is undefined',function(){
+            expect(soapUtils.isEmpty()).toEqual(true);
+        });
+
+        it('returns true if the object is null',function(){
+            expect(soapUtils.isEmpty(null)).toEqual(true);
+        });
+
+        it('returns false if the object is not empty',function(){
+            expect(soapUtils.isEmpty({x:1})).toEqual(false);
+        });
+    });
+
+    describe('processResponse',function(){
+        it('removes attributes and $value from objects', function(){
+            var obj = {
+                prop1 : {
+                    attributes : { x : 1 },
+                    subprop1 : {
+                        attributes : { z : 2 },
+                        $value : 1
+                    }
+                },
+                prop2 : { $value : 2 }
+            };
+            expect(soapUtils.processResponse(obj)).toEqual({
+                prop1 : { subprop1 : 1 },
+                prop2 : 2
+            });
+        });
+    });
+
     describe('createSoapSSLClient',function(){
         var mockClient, mockFs, mockSoap;
         beforeEach(function(){
