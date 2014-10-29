@@ -253,6 +253,77 @@ describe('adtech.websiteAdmin',function(){
         .done(done);
     });
 
+    it('creates a placement', function(done){
+        adtech.websiteAdmin.getPageByExtId(testId + '_page1')
+        .then(function(page){
+            var plc = {
+                extId : 'page1_place1',
+                name : 'page1_place1',
+                pageId : page.id,
+                websiteId : page.websiteId
+            };
+            return adtech.websiteAdmin.createPlacement(plc);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var plc = resolveSpy.calls[0].args[0];
+            expect(plc.name).toEqual('page1_place1');
+        })
+        .done(done);
+    });
+
+    it('gets a placement by extId', function(done){
+        adtech.websiteAdmin.getPlacementByExtId('page1_place1')
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var plc = resolveSpy.calls[0].args[0];
+            expect(plc.name).toEqual('page1_place1');
+        })
+        .done(done);
+    });
+
+    it('gets a placement by id', function(done){
+        adtech.websiteAdmin.getPlacementByExtId('page1_place1')
+        .then(function(plc){
+            return adtech.websiteAdmin.getPlacementById(plc.id);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var plc = resolveSpy.calls[0].args[0];
+            expect(plc.name).toEqual('page1_place1');
+        })
+        .done(done);
+    });
+
+    it('gets placements by page', function(done){
+        adtech.websiteAdmin.getPageByExtId(testId + '_page3')
+        .then(function(page){
+            var i = 0, plcs = [];
+            for (i = 2; i <= 5; i++){
+                plcs.push({
+                    extId       : 'page3_place' + i,
+                    name        : 'page3_place' + i,
+                    pageId      : page.id,
+                    websiteId   : page.websiteId
+                });
+            }
+            return q.all(plcs.map(function(plc){
+                return adtech.websiteAdmin.createPlacement(plc);
+            }));
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var plc = resolveSpy.calls[0].args[0];
+            console.log(plc);
+            //expect(plc.name).toEqual('page1_place1');
+        })
+        .done(done);
+    });
+/*
     it('deletes a website',function(done){
         var aove = new adtech.AOVE();
         aove.addExpression(new adtech.AOVE.StringExpression('extId',testId));
@@ -264,4 +335,5 @@ describe('adtech.websiteAdmin',function(){
         .then(expectSuccess)
         .done(done);
     });
+*/
 });

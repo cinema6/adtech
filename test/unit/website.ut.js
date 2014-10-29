@@ -16,6 +16,11 @@ describe('website',function(){
             getPageList         : jasmine.createSpy('getPageList'),
             updatePage          : jasmine.createSpy('updatePage'),
             createPlacement     : jasmine.createSpy('createPlacement'),
+            deletePlacement     : jasmine.createSpy('deletePlacement'),
+            getPlacementByExtId : jasmine.createSpy('getPlacementByExtId'),
+            getPlacementById    : jasmine.createSpy('getPlacementById'),
+            getPlacementList    : jasmine.createSpy('getPlacementList'),
+            updatePlacement     : jasmine.createSpy('updatePlacement'),
             createWebsite       : jasmine.createSpy('createWebsite'),
             getWebsiteByExtId   : jasmine.createSpy('getWebsiteByExtId'),
             getWebsiteById      : jasmine.createSpy('getWebsiteById'),
@@ -346,7 +351,7 @@ describe('website',function(){
                 .done(done);
         });
         
-        it('rejects if the website create fails',function(done){
+        it('rejects if the placement create fails',function(done){
             var placement = {  }, err = new Error('err');
             mockClient.createPlacement.andCallFake(function(opts,cb){
                 process.nextTick(function(){
@@ -363,6 +368,221 @@ describe('website',function(){
                 .done(done);
         });
     });
+   
+    describe('deletePlacement', function(){
+        it('returns true if the placement is deleted',function(done){
+            mockClient.deletePlacement.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ {}, "" ]);
+                });
+            });
+
+            website.deletePlacement(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith(true);
+                    expect(mockClient.deletePlacement.calls[0].args[0])
+                        .toEqual({pageId:1});
+                })
+                .done(done);
+        });
+
+        it('rejects if the placement is not deleted', function(done){
+            var e = new Error('error');
+            mockClient.deletePlacement.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            website.deletePlacement(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+    });
+
+    describe('getPlacementById', function(){
+        it ('proxies to the client getPlacementById', function(done){
+            mockClient.getPlacementById.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+            
+            website.getPlacementById(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    expect(mockClient.getPlacementById.calls[0].args[0])
+                        .toEqual({id:1,col:mockSUtils.nil});
+                })
+                .done(done);
+        });
+
+        it('rejects with error if not found', function(done){
+            mockClient.getPlacementById.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{},'<>']);
+                });
+            });
+            website.getPlacementById(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy.calls[0].args[0].message)
+                        .toEqual('Unable to locate page: 1.');
+                })
+                .done(done);
+        });
+    });
+
+    describe('getPlacementByExtId', function(){
+        it ('proxies to the client getPlacementByExtId', function(done){
+            mockClient.getPlacementByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+            
+            website.getPlacementByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    expect(mockClient.getPlacementByExtId.calls[0].args[0])
+                        .toEqual({extid:1});
+                })
+                .done(done);
+        });
+
+        it('rejects with error if not found', function(done){
+            mockClient.getPlacementByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{},'<>']);
+                });
+            });
+            website.getPlacementByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy.calls[0].args[0].message)
+                        .toEqual('Unable to locate page: 1.');
+                })
+                .done(done);
+        });
+
+    });
+
+    describe('getPlacementList', function(){
+        it ('returns an array with one result if one result is found', function(done){
+            var mockPlacement = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getPlacementList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { Placement : mockPlacement  }  }, '']);
+                });
+            });
+            
+            website.getPlacementList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockPlacement]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+
+        it ('returns an array with multipe results if multiple results found', function(done){
+            var mockPlacement = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getPlacementList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { Placement : { 0 : mockPlacement, 1 : mockPlacement } } }, '']);
+                });
+            });
+            
+            website.getPlacementList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockPlacement,mockPlacement]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it('returns an empty array if no sites are found', function(done){
+            mockClient.getPlacementList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+            website.getPlacementList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
+    
+    describe('updatePlacement', function(){
+        it('returns true if the placement is updated',function(done){
+            var placement = {};
+            mockClient.updatePlacement.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { response : {} }, "" ]);
+                });
+            });
+
+            website.updatePlacement(mockClient,placement)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(mockClient.updatePlacement.calls[0].args[0]).toEqual({pl:placement});
+                })
+                .done(done);
+        });
+
+        it('rejects if the placement is not updated', function(done){
+            var e = new Error('error');
+            mockClient.updatePlacement.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            website.updatePlacement(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+
+    });
+    
+
     
     describe('createWebsite', function(){
         it('maps parameters to parameter properties',function(done){
@@ -644,14 +864,19 @@ describe('website',function(){
                         'createPlacement',
                         'createWebsite',
                         'deletePage',
+                        'deletePlacement',
                         'deleteWebsite',
                         'getPageByExtId',
                         'getPageById',
                         'getPageList',
+                        'getPlacementByExtId',
+                        'getPlacementById',
+                        'getPlacementList',
                         'getWebsiteByExtId',
                         'getWebsiteById',
                         'getWebsiteList',
                         'updatePage',
+                        'updatePlacement',
                         'updateWebsite'    
                     ]);
                 })
