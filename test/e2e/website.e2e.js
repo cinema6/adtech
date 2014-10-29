@@ -54,6 +54,35 @@ describe('adtech.websiteAdmin',function(){
         })
         .done(done);
     });
+    
+    it('gets a website by ExtId', function(done){
+        adtech.websiteAdmin.getWebsiteByExtId(testId)
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var site = resolveSpy.calls[0].args[0];
+            expect(site.name).toEqual(testId);
+            expect(site.extId).toEqual(testId);
+            expect(site.URL).toEqual('http://www.cinema6-e2e-test.com');
+        })
+        .done(done);
+    });
+
+    it('gets a website by id', function(done){
+        adtech.websiteAdmin.getWebsiteByExtId(testId)
+        .then(function(site){
+            return adtech.websiteAdmin.getWebsiteById(site.id);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var site = resolveSpy.calls[0].args[0];
+            expect(site.name).toEqual(testId);
+            expect(site.extId).toEqual(testId);
+            expect(site.URL).toEqual('http://www.cinema6-e2e-test.com');
+        })
+        .done(done);
+    });
 
     it('finds a website by name', function(done){
         var aove = new adtech.AOVE();
@@ -84,6 +113,143 @@ describe('adtech.websiteAdmin',function(){
         })
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
+        .then(function(){
+            var site = resolveSpy.calls[0].args[0];
+            expect(site.name).toEqual(testId + '_updated');
+            expect(site.extId).toEqual(testId);
+            expect(site.URL).toEqual('http://www.cinema6-e2e-test.com');
+        })
+        .done(done);
+    });
+
+    it('creates a page for a website', function(done){
+        var aove = new adtech.AOVE();
+        aove.addExpression(new adtech.AOVE.StringExpression('extId',testId));
+        adtech.websiteAdmin.getWebsiteList(null,null,aove)
+        .then(function(siteList){
+            var page = {
+                extId : testId + '_page1',
+                name  : 'testPage1',
+                websiteId : siteList[0].id
+            };
+            return adtech.websiteAdmin.createPage(page);            
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .done(done);
+    });
+
+    it('gets a page by ExtId', function(done){
+        adtech.websiteAdmin.getPageByExtId(testId + '_page1')
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var page = resolveSpy.calls[0].args[0];
+            expect(page.name).toEqual('testPage1');
+            expect(page.extId).toEqual(testId + '_page1');
+        })
+        .done(done);
+    });
+
+    it('gets a page by id', function(done){
+        adtech.websiteAdmin.getPageByExtId(testId + '_page1')
+        .then(function(page){
+            return adtech.websiteAdmin.getPageById(page.id);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var page = resolveSpy.calls[0].args[0];
+            expect(page.name).toEqual('testPage1');
+            expect(page.extId).toEqual(testId + '_page1');
+        })
+        .done(done);
+    });
+
+    it('gets a pageList for a website - extId LIKE testId', function(done){
+        var pages = [],hPage;
+        hPage = function(page){
+            pages.push(page);
+            return adtech.websiteAdmin.createPage( {
+                extId : testId + '_page' + (pages.length + 1),
+                name  : 'testPage' + (pages.length + 1),
+                websiteId : page.websiteId
+            });
+        }
+        adtech.websiteAdmin.getPageByExtId(testId + '_page1')
+        .then(hPage)
+        .then(hPage)
+        .then(function(page){
+            pages.push(page);
+            var aove = new adtech.AOVE();
+            aove.addExpression(new adtech.AOVE.StringExpression('extId',testId,'LIKE'));
+            return adtech.websiteAdmin.getPageList(null,null,aove);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var pages = resolveSpy.calls[0].args[0];
+            expect(pages.length).toEqual(3);
+        })
+        .done(done);
+    });
+    
+    it('gets a pageList for a website - websiteId == id', function(done){
+        adtech.websiteAdmin.getPageByExtId(testId + '_page1')
+        .then(function(page){
+            var aove = new adtech.AOVE();
+            aove.addExpression(new adtech.AOVE.LongExpression('websiteId',page.websiteId));
+            return adtech.websiteAdmin.getPageList(null,null,aove);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var pages = resolveSpy.calls[0].args[0];
+            expect(pages.length).toEqual(3);
+        })
+        .done(done);
+    });
+    
+    it('updates a page', function(done){
+        adtech.websiteAdmin.getPageByExtId(testId + '_page2')
+        .then(function(page){
+            var update = {
+                extId       : page.extId + '_updated',
+                id          : page.id,
+                websiteId   : page.websiteId
+            };
+            return adtech.websiteAdmin.updatePage(update);            
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var page = resolveSpy.calls[0].args[0];
+            expect(page.extId).toEqual(testId + '_page2_updated');
+        })
+        .done(done);
+    });
+
+
+    it('deletes a page', function(done){
+        adtech.websiteAdmin.getPageByExtId(testId + '_page2_updated')
+        .then(function(page){
+            return adtech.websiteAdmin.deletePage(page.id);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var aove = new adtech.AOVE();
+            aove.addExpression(new adtech.AOVE.StringExpression('extId',testId,'LIKE'));
+            return adtech.websiteAdmin.getPageList(null,null,aove);
+        })
+        .then(function(pageList){
+            expect(pageList.length).toEqual(2);
+            pageList = pageList.sort(function(a,b){
+                return a.extId > b.extId;
+            });
+            expect(pageList[0].extId).toEqual(testId + '_page1');
+            expect(pageList[1].extId).toEqual(testId + '_page3');
+        })
         .done(done);
     });
 
@@ -98,5 +264,4 @@ describe('adtech.websiteAdmin',function(){
         .then(expectSuccess)
         .done(done);
     });
-
 });

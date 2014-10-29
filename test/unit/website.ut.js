@@ -9,10 +9,19 @@ describe('website',function(){
         rejectSpy    = jasmine.createSpy('reject');
         
         mockClient = {
-            createWebsite  : jasmine.createSpy('createWebsite'),
-            getWebsiteById : jasmine.createSpy('getWebsiteById'),
-            getWebsiteList : jasmine.createSpy('getWebsiteList'),
-            deleteWebsite  : jasmine.createSpy('deleteWebsite')
+            createPage          : jasmine.createSpy('createPage'),
+            deletePage          : jasmine.createSpy('deletePage'),
+            getPageByExtId      : jasmine.createSpy('getPageByExtId'),
+            getPageById         : jasmine.createSpy('getPageById'),
+            getPageList         : jasmine.createSpy('getPageList'),
+            updatePage          : jasmine.createSpy('updatePage'),
+            createPlacement     : jasmine.createSpy('createPlacement'),
+            createWebsite       : jasmine.createSpy('createWebsite'),
+            getWebsiteByExtId   : jasmine.createSpy('getWebsiteByExtId'),
+            getWebsiteById      : jasmine.createSpy('getWebsiteById'),
+            getWebsiteList      : jasmine.createSpy('getWebsiteList'),
+            deleteWebsite       : jasmine.createSpy('deleteWebsite'),
+            updateWebsite       : jasmine.createSpy('updateWebsite')
         };
         
     });
@@ -59,6 +68,302 @@ describe('website',function(){
 
     })
     
+    describe('createPage', function(){
+        it('maps parameters to parameter properties',function(done){
+            var page = {  };
+            mockClient.createPage.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+
+            website.createPage(mockClient,page)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    var args = mockClient.createPage.calls[0].args;
+                    expect(args[0]).toEqual({
+                        page : page
+                    });
+                })
+                .done(done);
+        });
+        
+        it('rejects if the website create fails',function(done){
+            var page = {  }, err = new Error('err');
+            mockClient.createPage.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(err);
+                });
+            });
+
+            website.createPage(mockClient,page)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(err);
+                })
+                .done(done);
+        });
+    });
+    
+    describe('deletePage', function(){
+        it('returns true if the website is deleted',function(done){
+            mockClient.deletePage.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ {}, "" ]);
+                });
+            });
+
+            website.deletePage(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith(true);
+                    expect(mockClient.deletePage.calls[0].args[0])
+                        .toEqual({pageId:1});
+                })
+                .done(done);
+        });
+
+        it('rejects if the website is not deleted', function(done){
+            var e = new Error('error');
+            mockClient.deletePage.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            website.deletePage(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+
+    });
+
+    describe('getPageById', function(){
+        it ('proxies to the client getPageById', function(done){
+            mockClient.getPageById.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+            
+            website.getPageById(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    expect(mockClient.getPageById.calls[0].args[0])
+                        .toEqual({id:1,col:mockSUtils.nil});
+                })
+                .done(done);
+        });
+
+        it('rejects with error if not found', function(done){
+            mockClient.getPageById.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{},'<>']);
+                });
+            });
+            website.getPageById(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy.calls[0].args[0].message)
+                        .toEqual('Unable to locate page: 1.');
+                })
+                .done(done);
+        });
+    });
+
+    describe('getPageByExtId', function(){
+        it ('proxies to the client getPageByExtId', function(done){
+            mockClient.getPageByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+            
+            website.getPageByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    expect(mockClient.getPageByExtId.calls[0].args[0])
+                        .toEqual({extid:1});
+                })
+                .done(done);
+        });
+
+        it('rejects with error if not found', function(done){
+            mockClient.getPageByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{},'<>']);
+                });
+            });
+            website.getPageByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy.calls[0].args[0].message)
+                        .toEqual('Unable to locate page: 1.');
+                })
+                .done(done);
+        });
+
+    });
+
+    describe('getPageList', function(){
+        it ('returns an array with one result if one result is found', function(done){
+            var mockPage = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getPageList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { Page : mockPage  }  }, '']);
+                });
+            });
+            
+            website.getPageList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockPage]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+
+        it ('returns an array with multipe results if multiple results found', function(done){
+            var mockPage = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getPageList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { Page : { 0 : mockPage, 1 : mockPage } } }, '']);
+                });
+            });
+            
+            website.getPageList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockPage,mockPage]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it('returns an empty array if no sites are found', function(done){
+            mockClient.getPageList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+            website.getPageList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
+    
+    describe('updatePage', function(){
+        it('returns true if the page is updated',function(done){
+            var page = {};
+            mockClient.updatePage.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { response : {} }, "" ]);
+                });
+            });
+
+            website.updatePage(mockClient,page)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(mockClient.updatePage.calls[0].args[0]).toEqual({page:page});
+                })
+                .done(done);
+        });
+
+        it('rejects if the page is not updated', function(done){
+            var e = new Error('error');
+            mockClient.updatePage.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            website.updatePage(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+
+    });
+    
+    describe('createPlacement', function(){
+        it('maps parameters to parameter properties',function(done){
+            var placement = {  };
+            mockClient.createPlacement.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+
+            website.createPlacement(mockClient,placement)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    var args = mockClient.createPlacement.calls[0].args;
+                    expect(args[0]).toEqual({
+                        pl : placement
+                    });
+                })
+                .done(done);
+        });
+        
+        it('rejects if the website create fails',function(done){
+            var placement = {  }, err = new Error('err');
+            mockClient.createPlacement.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(err);
+                });
+            });
+
+            website.createPlacement(mockClient,placement)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(err);
+                })
+                .done(done);
+        });
+    });
+    
     describe('createWebsite', function(){
         it('maps parameters to parameter properties',function(done){
             var site = {  };
@@ -100,6 +405,7 @@ describe('website',function(){
         });
     });
 
+
     describe('deleteWebsite', function(){
         it('returns true if the website is deleted',function(done){
             mockClient.deleteWebsite.andCallFake(function(opts,cb){
@@ -130,6 +436,46 @@ describe('website',function(){
             });
 
             website.deleteWebsite(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+
+    });
+
+    describe('updateWebsite', function(){
+        it('returns true if the website is updated',function(done){
+            var site = {};
+            mockClient.updateWebsite.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { response : {} }, "" ]);
+                });
+            });
+
+            website.updateWebsite(mockClient,site)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(mockClient.updateWebsite.calls[0].args[0]).toEqual({site:site});
+                })
+                .done(done);
+        });
+
+        it('rejects if the website is not updated', function(done){
+            var e = new Error('error');
+            mockClient.updateWebsite.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            website.updateWebsite(mockClient,1)
                 .then(resolveSpy,rejectSpy)
                 .then(function(){
                     expect(resolveSpy).not.toHaveBeenCalled();
@@ -175,6 +521,44 @@ describe('website',function(){
                 })
                 .done(done);
         });
+    });
+
+    describe('getWebsiteByExtId', function(){
+        it ('proxies to the client getWebsiteByExtId', function(done){
+            mockClient.getWebsiteByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+            
+            website.getWebsiteByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    expect(mockClient.getWebsiteByExtId.calls[0].args[0])
+                        .toEqual({extid:1});
+                })
+                .done(done);
+        });
+
+        it('rejects with error if not found', function(done){
+            mockClient.getWebsiteByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{},'<>']);
+                });
+            });
+            website.getWebsiteByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy.calls[0].args[0].message)
+                        .toEqual('Unable to locate website: 1.');
+                })
+                .done(done);
+        });
+
     });
 
     describe('getWebsiteList', function(){
@@ -256,10 +640,18 @@ describe('website',function(){
                     expect(args[1]).toEqual(mockCert);
                     expect(args[2]).toEqual(website);
                     expect(args[3]).toEqual([
+                        'createPage',
+                        'createPlacement',
                         'createWebsite',
+                        'deletePage',
                         'deleteWebsite',
+                        'getPageByExtId',
+                        'getPageById',
+                        'getPageList',
+                        'getWebsiteByExtId',
                         'getWebsiteById',
                         'getWebsiteList',
+                        'updatePage',
                         'updateWebsite'    
                     ]);
                 })
