@@ -16,6 +16,10 @@ function createSite(){
     return admin.createWebsite(website);
 }
 
+function deleteSite(){
+    return admin.deleteWebsite(222799);
+}
+
 function getSite() {
     return admin.getWebsiteById(208628);
 }
@@ -46,7 +50,7 @@ function getSiteList(){
 console.log('Create website admin!');
 adtech.createWebsiteAdmin()
 .then(setAdmin)
-.then(getSiteList)
+.then(deleteSite)
 .then(function(result){
     console.log('result:',JSON.stringify(result,null,3));
 })

@@ -2,10 +2,18 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         'jasmine_node': {
-            'options': {
-                'specNameMatcher': '.ut'
+            'e2e': { 
+                'options': {
+                    'specNameMatcher': '.e2e'
+                },
+                'src' : [ 'test/e2e' ]
             },
-            all: ['test/unit']
+            'unit': { 
+                'options': {
+                    'specNameMatcher': '.ut'
+                },
+                'src' : [ 'test/unit' ]
+            }
         },
         'jshint': {
             'options' : {
@@ -24,10 +32,11 @@ module.exports = function(grunt) {
                     atBegin : true
                 },
                 'files': [
+                    __dirname + '/*.js',
                     __dirname + '/lib/**/*.js',
-                    __dirname + '/test/**/*.js'
+                    __dirname + '/test/unit/*.js'
                 ],
-                'tasks' : [ 'jshint', 'jasmine_node' ]
+                'tasks' : [ 'jshint', 'jasmine_node:unit' ]
             }
         }
     });
@@ -36,9 +45,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('test',function(){
+    grunt.registerTask('test',function(type){
+        if (type === 'e2e'){
+            grunt.task.run('jshint');
+            grunt.task.run('jasmine_node:e2e');
+            return;
+        }
         grunt.task.run('jshint');
-        grunt.task.run('jasmine_node');
+        grunt.task.run('jasmine_node:unit');
     });
 
 };
