@@ -1,8 +1,24 @@
 describe('adtech.websiteAdmin',function(){
     var adtech, testId, once = false, expectSuccess, expectFailure;
     beforeEach(function(done){
+        var getArg = function(call,arg){
+            if (this && this.calls && this.calls[call || 0]) {
+                return this.calls[call || 0].args[arg || 0] || {};
+            }
+            return {};
+        };
+
         resolveSpy   = jasmine.createSpy('resolve');
         rejectSpy    = jasmine.createSpy('reject');
+        
+        resolveSpy.arg = function(call,arg) {
+            return getArg.apply(this,call,arg);
+        };
+
+        rejectSpy.arg = function(call,arg) {
+            return getArg.apply(this,call,arg);
+        };
+
         if (once){
             return done();
         }
@@ -25,13 +41,12 @@ describe('adtech.websiteAdmin',function(){
         }());
         expectSuccess = function(){
             expect(resolveSpy).toHaveBeenCalled();
-            expect(rejectSpy).not.toHaveBeenCalled();
         };
         expectFailure = function(){
-            expect(resolveSpy).not.toHaveBeenCalled();
             expect(rejectSpy).toHaveBeenCalled();
+//            console.log('ERR:',rejectSpy.arg());
         };
-        adtech.createWebsiteAdmin().catch(done).finally(done);
+        adtech.createWebsiteAdmin().catch(done).finally(done,done);
     });
 
     it('creates an admin', function(){
@@ -49,10 +64,10 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var testSite = resolveSpy.calls[0].args[0];
+            var testSite = resolveSpy.arg();
             expect(testSite.name).toEqual(testId);
         })
-        .done(done);
+        .done(done,done);
     });
     
     it('gets a website by ExtId', function(done){
@@ -60,12 +75,12 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var site = resolveSpy.calls[0].args[0];
+            var site = resolveSpy.arg();
             expect(site.name).toEqual(testId);
             expect(site.extId).toEqual(testId);
             expect(site.URL).toEqual('http://www.cinema6-e2e-test.com');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('gets a website by id', function(done){
@@ -76,12 +91,12 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var site = resolveSpy.calls[0].args[0];
+            var site = resolveSpy.arg();
             expect(site.name).toEqual(testId);
             expect(site.extId).toEqual(testId);
             expect(site.URL).toEqual('http://www.cinema6-e2e-test.com');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('finds a website by name', function(done){
@@ -91,13 +106,13 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var sites = resolveSpy.calls[0].args[0];
+            var sites = resolveSpy.arg();
             expect(sites.length).toEqual(1);
             expect(sites[0].name).toEqual(testId);
             expect(sites[0].extId).toEqual(testId);
             expect(sites[0].URL).toEqual('http://www.cinema6-e2e-test.com');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('updates a website', function(done){
@@ -114,12 +129,12 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var site = resolveSpy.calls[0].args[0];
+            var site = resolveSpy.arg();
             expect(site.name).toEqual(testId + '_updated');
             expect(site.extId).toEqual(testId);
             expect(site.URL).toEqual('http://www.cinema6-e2e-test.com');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('creates a page for a website', function(done){
@@ -136,7 +151,7 @@ describe('adtech.websiteAdmin',function(){
         })
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
-        .done(done);
+        .done(done,done);
     });
 
     it('gets a page by ExtId', function(done){
@@ -144,11 +159,11 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var page = resolveSpy.calls[0].args[0];
+            var page = resolveSpy.arg();
             expect(page.name).toEqual('testPage1');
             expect(page.extId).toEqual(testId + '_page1');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('gets a page by id', function(done){
@@ -159,11 +174,11 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var page = resolveSpy.calls[0].args[0];
+            var page = resolveSpy.arg();
             expect(page.name).toEqual('testPage1');
             expect(page.extId).toEqual(testId + '_page1');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('gets a pageList for a website - extId LIKE testId', function(done){
@@ -188,10 +203,10 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var pages = resolveSpy.calls[0].args[0];
+            var pages = resolveSpy.arg();
             expect(pages.length).toEqual(3);
         })
-        .done(done);
+        .done(done,done);
     });
     
     it('gets a pageList for a website - websiteId == id', function(done){
@@ -204,10 +219,10 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var pages = resolveSpy.calls[0].args[0];
+            var pages = resolveSpy.arg();
             expect(pages.length).toEqual(3);
         })
-        .done(done);
+        .done(done,done);
     });
     
     it('updates a page', function(done){
@@ -223,10 +238,10 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var page = resolveSpy.calls[0].args[0];
+            var page = resolveSpy.arg();
             expect(page.extId).toEqual(testId + '_page2_updated');
         })
-        .done(done);
+        .done(done,done);
     });
 
 
@@ -250,14 +265,14 @@ describe('adtech.websiteAdmin',function(){
             expect(pageList[0].extId).toEqual(testId + '_page1');
             expect(pageList[1].extId).toEqual(testId + '_page3');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('creates a placement', function(done){
         adtech.websiteAdmin.getPageByExtId(testId + '_page1')
         .then(function(page){
             var plc = {
-                extId : 'page1_place1',
+                extId : testId + 'page1_place1',
                 name : 'page1_place1',
                 pageId : page.id,
                 websiteId : page.websiteId
@@ -267,73 +282,137 @@ describe('adtech.websiteAdmin',function(){
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var plc = resolveSpy.calls[0].args[0];
+            var plc = resolveSpy.arg();
             expect(plc.name).toEqual('page1_place1');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('gets a placement by extId', function(done){
-        adtech.websiteAdmin.getPlacementByExtId('page1_place1')
+        adtech.websiteAdmin.getPlacementByExtId(testId + 'page1_place1')
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var plc = resolveSpy.calls[0].args[0];
+            var plc = resolveSpy.arg();
             expect(plc.name).toEqual('page1_place1');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('gets a placement by id', function(done){
-        adtech.websiteAdmin.getPlacementByExtId('page1_place1')
+        adtech.websiteAdmin.getPlacementByExtId(testId + 'page1_place1')
         .then(function(plc){
             return adtech.websiteAdmin.getPlacementById(plc.id);
         })
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var plc = resolveSpy.calls[0].args[0];
+            var plc = resolveSpy.arg();
             expect(plc.name).toEqual('page1_place1');
         })
-        .done(done);
+        .done(done,done);
     });
 
     it('gets placements by page', function(done){
+        var pageId;
         adtech.websiteAdmin.getPageByExtId(testId + '_page3')
         .then(function(page){
+            pageId = page.id;
             var i = 0, plcs = [];
-            for (i = 2; i <= 5; i++){
+            for (i = 1; i <= 3; i++){
                 plcs.push({
-                    extId       : 'page3_place' + i,
+                    extId       : testId + 'page3_place' + i,
                     name        : 'page3_place' + i,
                     pageId      : page.id,
                     websiteId   : page.websiteId
                 });
             }
-            return q.all(plcs.map(function(plc){
-                return adtech.websiteAdmin.createPlacement(plc);
-            }));
+            return plcs;
+        })
+        .then(function createPlacement(plcs){
+            var pl = plcs.shift();
+            if (!pl){
+                return true;
+            }
+
+            return adtech.websiteAdmin.createPlacement(pl)
+                .then(function(){ return createPlacement(plcs); });
+        })
+        .then(function(){
+            var aove = new adtech.AOVE();
+            aove.addExpression(new adtech.AOVE.LongExpression('pageId',pageId));
+            return adtech.websiteAdmin.getPlacementList(null,null,aove);
         })
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var plc = resolveSpy.calls[0].args[0];
-            console.log(plc);
-            //expect(plc.name).toEqual('page1_place1');
+            var plc = resolveSpy.arg();
+            plc = plc.sort(function(a,b){ return a.extId > b.extId; });
+            expect(plc.length).toEqual(3);
+            expect(plc[0].name).toEqual('page3_place1');
+            expect(plc[1].name).toEqual('page3_place2');
+            expect(plc[2].name).toEqual('page3_place3');
         })
-        .done(done);
+        .done(done,done);
     });
-/*
-    it('deletes a website',function(done){
-        var aove = new adtech.AOVE();
-        aove.addExpression(new adtech.AOVE.StringExpression('extId',testId));
-        adtech.websiteAdmin.getWebsiteList(null,null,aove)
-        .then(function(siteList){
-            return adtech.websiteAdmin.deleteWebsite(siteList[0].id);            
+/* 
+ * These work, but including them seems to interfer with how
+ * adtech handles the subsequent deletion of the test site.
+ *
+    it('updates a placement', function(done){
+        adtech.websiteAdmin.getPlacementByExtId(testId + 'page1_place1')
+        .then(function(plc){
+            var update = {
+                id        : plc.id,
+                name      : 'page1_place1_updated',
+                pageId    : plc.pageId,
+                websiteId : plc.websiteId
+            }
+            return adtech.websiteAdmin.updatePlacement(update);
         })
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
-        .done(done);
+        .then(function(){
+            return adtech.websiteAdmin.getPlacementByExtId(testId + 'page1_place1');
+        })
+        .then(function(plc){
+            expect(plc.name).toEqual('page1_place1_updated');
+        })
+        .done(done,done);
+    });
+ 
+    it('deletes a placement', function(done){
+        var siteId;
+        adtech.websiteAdmin.getPlacementByExtId(testId + 'page3_place2')
+        .then(function(plc){
+            siteId = plc.websiteId;
+            return adtech.websiteAdmin.deletePlacement(plc.id);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var aove = new adtech.AOVE();
+            aove.addExpression(new adtech.AOVE.LongExpression('websiteId',siteId));
+            return adtech.websiteAdmin.getPlacementList(null,null,aove);
+        })
+        .then(function(plc){
+            plc = plc.sort(function(a,b){ return a.extId > b.extId; });
+            expect(plc.length).toEqual(3);
+            expect(plc[0].name).toEqual('page1_place1_updated');
+            expect(plc[1].name).toEqual('page3_place1');
+            expect(plc[2].name).toEqual('page3_place3');
+        })
+        .done(done,done);
     });
 */
+    it('deletes a website',function(done){
+        adtech.websiteAdmin.getWebsiteByExtId(testId)
+//        .delay(61000)
+        .then(function(site){
+            return adtech.websiteAdmin.deleteWebsite(site.id);
+        })
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .done(done,done);
+    }/*,90000*/);
 });

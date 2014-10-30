@@ -385,7 +385,7 @@ describe('website',function(){
                    
                     expect(resolveSpy).toHaveBeenCalledWith(true);
                     expect(mockClient.deletePlacement.calls[0].args[0])
-                        .toEqual({pageId:1});
+                        .toEqual({placeId:1});
                 })
                 .done(done);
         });
