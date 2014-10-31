@@ -1,51 +1,19 @@
-describe('adtech.websiteAdmin',function(){
-    var adtech, testId, once = false, expectSuccess, expectFailure;
+xdescribe('adtech.websiteAdmin',function(){
+    var adtech, testId, expectSuccess, expectFailure, resolveSpy, rejectSpy;
     beforeEach(function(done){
-        var getArg = function(call,arg){
-            if (this && this.calls && this.calls[call || 0]) {
-                return this.calls[call || 0].args[arg || 0] || {};
-            }
-            return {};
-        };
-
-        resolveSpy   = jasmine.createSpy('resolve');
-        rejectSpy    = jasmine.createSpy('reject');
+        var helpers = require('./helpers');
+        resolveSpy    = helpers.setupSpy('resolve');
+        rejectSpy     = helpers.setupSpy('reject');
+        expectSuccess = helpers.setExpectation('resolve');
+        expectFailure = helpers.setExpectation('reject');
         
-        resolveSpy.arg = function(call,arg) {
-            return getArg.apply(this,call,arg);
-        };
-
-        rejectSpy.arg = function(call,arg) {
-            return getArg.apply(this,call,arg);
-        };
-
-        if (once){
+        if (adtech){
             return done();
         }
-        once         = true;
+        
         adtech       = require('../../index');
         q            = require('q');
-        testId       = (function(){
-            var  result = '', digit, hash;
-            for (var i =0; i < 40; i++){
-                digit = Math.floor(Math.random() * 999999999) % 36;
-                if (digit < 26){
-                    result += String.fromCharCode(digit + 97);
-                } else {
-                    result += (digit - 26).toString();
-                }
-            }
-            hash = require('crypto').createHash('sha1');
-            hash.update(result);
-            return 'c6-e2e-' + hash.digest('hex').slice(0,9);
-        }());
-        expectSuccess = function(){
-            expect(resolveSpy).toHaveBeenCalled();
-        };
-        expectFailure = function(){
-            expect(rejectSpy).toHaveBeenCalled();
-//            console.log('ERR:',rejectSpy.arg());
-        };
+        testId       = 'c6-e2e-' + helpers.uuid();
         adtech.createWebsiteAdmin().catch(done).finally(done,done);
     });
 

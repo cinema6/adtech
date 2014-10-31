@@ -5,27 +5,26 @@ describe('AOVE',function(){
         nil  = require('../../lib/soaputils').nil;
     });
 
-    describe('LongExpression',function(){
-        it('takes values from a constructor',function(){
-            var e = new AOVE.LongExpression('attr1',10,'>');
-            expect(e.attr).toEqual('attr1');
-            expect(e.val).toEqual(10);
-            expect(e.op).toEqual('>');
+    describe('Expressions',function(){
+        it('IntExpression',function(){
+            var e = new AOVE.IntExpression('attr1',10);
+            expect(e.valueOf()).toEqual({
+                attributes : {
+                    'xsi:type' : 'hel:AttributeOperatorValueExpression'
+                },
+                expressions : nil,
+                attribute   : 'attr1',
+                operator    : '==',
+                value : {
+                    attributes : {
+                        'xsi:type' : 'xsd:int'
+                    },
+                    $value : 10
+                }
+            });
         });
-
-        it('defaults the operator to ==',function(){
-            var e = new AOVE.LongExpression('attr1',10);
-            expect(e.attr).toEqual('attr1');
-            expect(e.val).toEqual(10);
-            expect(e.op).toEqual('==');
-        });
-
-        it('defaults the type to xsd:long',function(){
-            var e = new AOVE.LongExpression('attr1',10);
-            expect(e.type).toEqual('xsd:long');
-        });
-
-        it('generates object literal from valueOf',function(){
+        
+        it('LongExpression',function(){
             var e = new AOVE.LongExpression('attr1',10);
             expect(e.valueOf()).toEqual({
                 attributes : {
@@ -42,29 +41,8 @@ describe('AOVE',function(){
                 }
             });
         });
-    });
-    
-    describe('StringExpression',function(){
-        it('takes values from a constructor',function(){
-            var e = new AOVE.StringExpression('attr1','val1','LIKE');
-            expect(e.attr).toEqual('attr1');
-            expect(e.val).toEqual('val1');
-            expect(e.op).toEqual('LIKE');
-        });
-
-        it('defaults the operator to ==',function(){
-            var e = new AOVE.StringExpression('attr1','val1');
-            expect(e.attr).toEqual('attr1');
-            expect(e.val).toEqual('val1');
-            expect(e.op).toEqual('==');
-        });
-
-        it('defaults the type to xsd:long',function(){
-            var e = new AOVE.StringExpression('attr1','val1');
-            expect(e.type).toEqual('xsd:string');
-        });
-
-        it('generates object literal from valueOf',function(){
+        
+        it('StringExpression',function(){
             var e = new AOVE.StringExpression('attr1','val1');
             expect(e.valueOf()).toEqual({
                 attributes : {
@@ -82,7 +60,7 @@ describe('AOVE',function(){
             });
         });
     });
-
+    
     describe('AOVE',function(){
         var filter, e1, e2;
         beforeEach(function(){

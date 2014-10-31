@@ -1,5 +1,5 @@
 describe('banner',function(){
-    var flush = true, q, banner, mockSUtils, resolveSpy, rejectSpy;
+    var flush = true, q, banner, mockSUtils, resolveSpy, rejectSpy, mockClient;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
         banner       = require('../../lib/banner');
@@ -7,6 +7,14 @@ describe('banner',function(){
         q            = require('q');
         resolveSpy   = jasmine.createSpy('resolve');
         rejectSpy    = jasmine.createSpy('reject');
+        
+        mockClient = {
+            createBanner  : jasmine.createSpy('createBanner'),
+            deleteBanner  : jasmine.createSpy('deleteBanner'),
+            getBannerList : jasmine.createSpy('getBannerList'),
+            updateBanner  : jasmine.createSpy('updateBanner')
+        };
+
     });
 
     describe('createClient',function(){
@@ -52,20 +60,12 @@ describe('banner',function(){
     })
 
     describe('createBanner', function(){
-        var mockClient;
-
         beforeEach(function(){
-            mockClient = {
-                createBanner : jasmine.createSpy('createBanner')
-            };
-
             mockClient.createBanner.andCallFake(function(opts,cb){
                 process.nextTick(function(){
                     cb(null,[{ response : {}  }]);
                 });
             });
-            
-            spyOn(mockSUtils,'processResponse');
         });
 
         it('maps parameters to parameter properties',function(done){
@@ -110,7 +110,145 @@ describe('banner',function(){
                 .done(done);
         });
     });
-    
+
+    describe('deleteBanner', function(){
+        it('returns true if the banner is deleted',function(done){
+            mockClient.deleteBanner.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ {}, "" ]);
+                });
+            });
+
+            banner.deleteBanner(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith(true);
+                    expect(mockClient.deleteBanner.calls[0].args[0])
+                        .toEqual({bannerId:1});
+                })
+                .done(done);
+        });
+
+        it('rejects if the banner is not deleted', function(done){
+            var e = new Error('error');
+            mockClient.deleteBanner.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            banner.deleteBanner(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+
+    });
+
+    describe('getBannerList', function(){
+        it ('returns an array with one result if one result is found', function(done){
+            var mockBanner = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getBannerList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { Banner : mockBanner  }  }, '']);
+                });
+            });
+            
+            banner.getBannerList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockBanner]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+
+        it ('returns an array with multipe results if multiple results found', function(done){
+            var mockBanner = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getBannerList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { Banner:{0:mockBanner,1:mockBanner} } }, '']);
+                });
+            });
+            
+            banner.getBannerList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockBanner,mockBanner]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it('returns an empty array if no results are found', function(done){
+            mockClient.getBannerList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+            banner.getBannerList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
+
+    describe('updateBanner', function(){
+        it('returns true if the banner is updated',function(done){
+            var ban = {};
+            mockClient.updateBanner.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { response : {} }, "" ]);
+                });
+            });
+
+            banner.updateBanner(mockClient,ban)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(mockClient.updateBanner.calls[0].args[0]).toEqual({bann:ban});
+                })
+                .done(done);
+        });
+
+        it('rejects if the banner is not updated', function(done){
+            var e = new Error('error');
+            mockClient.updateBanner.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            banner.updateBanner(mockClient,{})
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+    });
+
     describe('createAdmin', function(){
         beforeEach(function(){
             spyOn(mockSUtils,'makeAdmin');
@@ -130,7 +268,13 @@ describe('banner',function(){
                     expect(args[0]).toEqual(mockKey);
                     expect(args[1]).toEqual(mockCert);
                     expect(args[2]).toEqual(banner);
-                    expect(args[3]).toEqual(['createBanner']);
+                    expect(args[3]).toEqual([
+                        'createBanner',
+                        'deleteBanner',
+                        'getBannerInfoList',
+                        'getBannerList',
+                        'updateBanner' 
+                    ]);
                 })
                 .done(done);
         });
