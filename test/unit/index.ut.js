@@ -1,14 +1,16 @@
 describe('index',function(){
-    var once = true, index, banner, website, admin, q, resolveSpy, rejectSpy;
+    var once = true, index, banner, campaign, website, admin, q, resolveSpy, rejectSpy;
     beforeEach(function(){
         if (once) { 
             for (var m in require.cache){ delete require.cache[m]; }
             banner      = require('../../lib/banner');
+            campaign    = require('../../lib/campaign');
             website     = require('../../lib/website');
             constants   = require('../../lib/constants');
             q           = require('q');
             admin       = {},
             spyOn(banner,'createAdmin').andReturn(q(admin));
+            spyOn(campaign,'createAdmin').andReturn(q(admin));
             spyOn(website,'createAdmin').andReturn(q(admin));
             index   = require('../../index.js');
         }
@@ -24,6 +26,17 @@ describe('index',function(){
                 expect(resolveSpy).toHaveBeenCalled();
                 expect(banner.createAdmin).toHaveBeenCalled();
                 expect(index.bannerAdmin).toBe(admin);
+            })
+            .done(done);
+        });
+        
+        it('createCampaignAdmin is proxied',function(done){
+            index.createCampaignAdmin()
+            .then(resolveSpy,rejectSpy)
+            .then(function(){
+                expect(resolveSpy).toHaveBeenCalled();
+                expect(campaign.createAdmin).toHaveBeenCalled();
+                expect(index.campaignAdmin).toBe(admin);
             })
             .done(done);
         });

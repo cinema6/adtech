@@ -1,4 +1,3 @@
-
 function wrap (m,o){
     return function(){
         var args = Array.prototype.slice.call(arguments, 0);
@@ -16,5 +15,6 @@ module.exports = {
     AOVE                : require('./lib/aove'),
     constants           : require('./lib/constants'),
     createBannerAdmin   : wrap(require('./lib/banner').createAdmin, 'bannerAdmin'),
+    createCampaignAdmin : wrap(require('./lib/campaign').createAdmin, 'campaignAdmin'),
     createWebsiteAdmin  : wrap(require('./lib/website').createAdmin,'websiteAdmin')
 };

@@ -1,7 +1,8 @@
 describe('soaputils',function(){
-    var flush = true, q, soapUtils, resolveSpy, rejectSpy;
+    var flush = true, q, soapUtils, resolveSpy, rejectSpy, isArray;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
+        isArray    = require('util').isArray;
         soapUtils  = require('../../lib/soaputils');
         q          = require('q');
         resolveSpy = jasmine.createSpy('resolve');
@@ -36,12 +37,91 @@ describe('soaputils',function(){
                         $value : 1
                     }
                 },
-                prop2 : { $value : 2 }
+                prop2 : { $value : 2 },
+                list1 : {
+                    Items : {
+                        Item : [
+                            {
+                                attributes : { x : 1  },
+                                val1 : {
+                                    attributes : { x : 1},
+                                    $value : 1
+                                },
+                                val2 : {
+                                    attributes : { x : 1},
+                                    $value : 1
+                                }
+                            },
+                            {
+                                attributes : { x : 1  },
+                                val1 : {
+                                    attributes : { x : 1},
+                                    $value : 2
+                                },
+                                val2 : {
+                                    attributes : { x : 1},
+                                    $value : 2
+                                }
+                            }
+                        ]
+                    }
+                },
+                list2 : {
+                    Items : {
+                        Item : [
+                            {
+                                attributes : { x : 1  },
+                                $value : 'apple' 
+                            },
+                            {
+                                attributes : { x : 1},
+                                $value : 'banana' 
+                            },
+                            {
+                                attributes : { x : 1  },
+                                $value : 'carrot' 
+                            },
+                            {
+                                attributes : { x : 1},
+                                $value : 'dodo'
+                            }
+                        ]
+                    }
+                },
+                list3 : {
+                    Item : [
+                        {
+                            attributes : { x : 1  },
+                            $value : 'alligator' 
+                        },
+                        {
+                            attributes : { x : 1},
+                            $value : 'bear' 
+                        },
+                        {
+                            attributes : { x : 1  },
+                            $value : 'croc' 
+                        },
+                        {
+                            attributes : { x : 1},
+                            $value : 'dragon'
+                        }
+                    ]
+                }
             };
-            expect(soapUtils.processResponse(obj)).toEqual({
+            var processed = soapUtils.processResponse(obj);
+            expect(processed).toEqual({
                 prop1 : { subprop1 : 1 },
-                prop2 : 2
+                prop2 : 2,
+                list1 : [ 
+                        { val1 : 1, val2 : 1},
+                        { val1 : 2, val2 : 2}
+                ],
+                list2 : [ 'apple', 'banana', 'carrot', 'dodo' ],
+                list3 : [ 'alligator', 'bear', 'croc', 'dragon' ]
             });
+            expect(isArray(processed.list1)).toEqual(true);
+            expect(isArray(processed.list2)).toEqual(true);
         });
     });
 
