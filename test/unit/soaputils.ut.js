@@ -33,34 +33,34 @@ describe('soaputils',function(){
                 prop1 : {
                     attributes : { x : 1 },
                     subprop1 : {
-                        attributes : { z : 2 },
-                        $value : 1
+                        attributes : { 'i:type' : 'd:boolean' },
+                        $value : '1'
                     }
                 },
-                prop2 : { $value : 2 },
+                prop2 : { attributes : { z : 2 }, $value : 2 },
                 list1 : {
                     Items : {
                         Item : [
                             {
                                 attributes : { x : 1  },
                                 val1 : {
-                                    attributes : { x : 1},
-                                    $value : 1
+                                    attributes : { 'i:type' : 'd:long'},
+                                    $value : '1'
                                 },
                                 val2 : {
-                                    attributes : { x : 1},
-                                    $value : 1
+                                    attributes : { 'i:type' : 'd:int'},
+                                    $value : '1'
                                 }
                             },
                             {
                                 attributes : { x : 1  },
                                 val1 : {
-                                    attributes : { x : 1},
-                                    $value : 2
+                                    attributes : { 'i:type' : 'd:float'},
+                                    $value : '2.0'
                                 },
                                 val2 : {
-                                    attributes : { x : 1},
-                                    $value : 2
+                                    attributes : { 'i:type' : 'd:double'},
+                                    $value : '2.0'
                                 }
                             }
                         ]
@@ -107,18 +107,25 @@ describe('soaputils',function(){
                             $value : 'dragon'
                         }
                     ]
-                }
+                },
+                list4: {
+                    "attributes" : { "i:type" : "d:Vector" },
+                    "Items" : {}
+                },
+                emptyVal : { "attributes" : { "i:type" : "d:string" } }
             };
             var processed = soapUtils.processResponse(obj);
             expect(processed).toEqual({
-                prop1 : { subprop1 : 1 },
+                prop1 : { subprop1 : true },
                 prop2 : 2,
                 list1 : [ 
                         { val1 : 1, val2 : 1},
                         { val1 : 2, val2 : 2}
                 ],
                 list2 : [ 'apple', 'banana', 'carrot', 'dodo' ],
-                list3 : [ 'alligator', 'bear', 'croc', 'dragon' ]
+                list3 : [ 'alligator', 'bear', 'croc', 'dragon' ],
+                list4 : [ ],
+                emptyVal : null
             });
             expect(isArray(processed.list1)).toEqual(true);
             expect(isArray(processed.list2)).toEqual(true);

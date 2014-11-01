@@ -293,7 +293,7 @@ describe('website',function(){
             var page = {};
             mockClient.updatePage.andCallFake(function(opts,cb){
                 process.nextTick(function(){
-                    cb(null,[ { response : {} }, "" ]);
+                    cb(null,[ { response : {x:1}  }, "" ]);
                 });
             });
 
@@ -303,7 +303,7 @@ describe('website',function(){
                     expect(resolveSpy).toHaveBeenCalled();
                     expect(rejectSpy).not.toHaveBeenCalled();
                    
-                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
                     expect(mockClient.updatePage.calls[0].args[0]).toEqual({page:page});
                 })
                 .done(done);
@@ -547,7 +547,7 @@ describe('website',function(){
             var placement = {};
             mockClient.updatePlacement.andCallFake(function(opts,cb){
                 process.nextTick(function(){
-                    cb(null,[ { response : {} }, "" ]);
+                    cb(null,[ { response : {x:1} }, "" ]);
                 });
             });
 
@@ -557,7 +557,7 @@ describe('website',function(){
                     expect(resolveSpy).toHaveBeenCalled();
                     expect(rejectSpy).not.toHaveBeenCalled();
                    
-                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
                     expect(mockClient.updatePlacement.calls[0].args[0]).toEqual({pl:placement});
                 })
                 .done(done);
@@ -671,7 +671,7 @@ describe('website',function(){
             var site = {};
             mockClient.updateWebsite.andCallFake(function(opts,cb){
                 process.nextTick(function(){
-                    cb(null,[ { response : {} }, "" ]);
+                    cb(null,[ { response : {x:1} }, "" ]);
                 });
             });
 
@@ -681,7 +681,7 @@ describe('website',function(){
                     expect(resolveSpy).toHaveBeenCalled();
                     expect(rejectSpy).not.toHaveBeenCalled();
                    
-                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
                     expect(mockClient.updateWebsite.calls[0].args[0]).toEqual({site:site});
                 })
                 .done(done);

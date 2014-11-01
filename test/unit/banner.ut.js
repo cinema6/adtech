@@ -215,7 +215,7 @@ describe('banner',function(){
             var ban = {};
             mockClient.updateBanner.andCallFake(function(opts,cb){
                 process.nextTick(function(){
-                    cb(null,[ { response : {} }, "" ]);
+                    cb(null,[ { response : { x : 1 } }, "" ]);
                 });
             });
 
@@ -225,7 +225,7 @@ describe('banner',function(){
                     expect(resolveSpy).toHaveBeenCalled();
                     expect(rejectSpy).not.toHaveBeenCalled();
                    
-                    expect(resolveSpy).toHaveBeenCalledWith({});
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
                     expect(mockClient.updateBanner.calls[0].args[0]).toEqual({bann:ban});
                 })
                 .done(done);
