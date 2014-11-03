@@ -9,7 +9,12 @@ describe('campaign',function(){
         rejectSpy    = jasmine.createSpy('reject');
         
         mockClient = {
-            getCampaignById  : jasmine.createSpy('getCampaignById')
+            deleteCampaign       : jasmine.createSpy('deleteCampaign'),
+            getCampaignByExtId   : jasmine.createSpy('getCampaignByExtId'),
+            getCampaignById      : jasmine.createSpy('getCampaignById'),
+            getCampaignList      : jasmine.createSpy('getCampaignList'),
+            getCampaignTypeList  : jasmine.createSpy('getCampaignTypeList'),
+            getOptimizerTypeList : jasmine.createSpy('getOptimizerTypeList')
         };
 
     });
@@ -34,8 +39,12 @@ describe('campaign',function(){
                     expect(args[1]).toEqual(mockCert);
                     expect(args[2]).toEqual(campaign);
                     expect(args[3]).toEqual([
+                        'deleteCampaign',
+                        'getCampaignByExtId',
                         'getCampaignById',
-                        'getCampaignList'
+                        'getCampaignList',
+                        'getCampaignTypeList',
+                        'getOptimizerTypeList'
                     ]);
                 })
                 .done(done);
@@ -84,6 +93,84 @@ describe('campaign',function(){
 
     });
 
+    describe('deleteCampaign', function(){
+        it('returns true if the website is deleted',function(done){
+            mockClient.deleteCampaign.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ {}, "" ]);
+                });
+            });
+
+            campaign.deleteCampaign(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                   
+                    expect(resolveSpy).toHaveBeenCalledWith(true);
+                    expect(mockClient.deleteCampaign.calls[0].args[0])
+                        .toEqual({camid:1});
+                })
+                .done(done);
+        });
+
+        it('rejects if the website is not deleted', function(done){
+            var e = new Error('error');
+            mockClient.deleteCampaign.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            campaign.deleteCampaign(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+
+    });
+
+    describe('getCampaignByExtId', function(){
+        it ('proxies to the client getCampaignByExtId', function(done){
+            mockClient.getCampaignByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : {}  }]);
+                });
+            });
+            
+            campaign.getCampaignByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalled();
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                    
+                    expect(mockClient.getCampaignByExtId.calls[0].args[0])
+                        .toEqual({extid:1});
+                })
+                .done(done);
+        });
+
+        it('rejects with error if not found', function(done){
+            mockClient.getCampaignByExtId.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{},'<>']);
+                });
+            });
+            campaign.getCampaignByExtId(mockClient,1)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).not.toHaveBeenCalled();
+                    expect(rejectSpy.calls[0].args[0].message)
+                        .toEqual('Unable to locate campaign: 1.');
+                })
+                .done(done);
+        });
+
+    });
+
     describe('getCampaignById', function(){
         it ('proxies to the client getCampaignById', function(done){
             mockClient.getCampaignById.andCallFake(function(opts,cb){
@@ -121,6 +208,182 @@ describe('campaign',function(){
         });
     });
 
+    describe('getCampaignList', function(){
+        it ('returns an array with one result if one result is found', function(done){
+            var mockCampaign = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getCampaignList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { Campaign : mockCampaign  }  }, '']);
+                });
+            });
+            
+            campaign.getCampaignList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockCampaign]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+
+        it ('returns an array with multipe results if multiple results found', function(done){
+            var mockCampaign = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getCampaignList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response:{Campaign: [mockCampaign,mockCampaign]}}, '']);
+                });
+            });
+            
+            campaign.getCampaignList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockCampaign,mockCampaign]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it('returns an empty array if no sites are found', function(done){
+            mockClient.getCampaignList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+            campaign.getCampaignList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
+
+    describe('getCampaignTypeList', function(){
+        it ('returns an array with one result if one result is found', function(done){
+            var mockCampType = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getCampaignTypeList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { CampaignType : mockCampType  }  }, '']);
+                });
+            });
+            
+            campaign.getCampaignTypeList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockCampType]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+
+        it ('returns an array with multipe results if multiple results found', function(done){
+            var mockCampType = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getCampaignTypeList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response:{CampaignType: [mockCampType,mockCampType]}}, '']);
+                });
+            });
+            
+            campaign.getCampaignTypeList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockCampType,mockCampType]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it('returns an empty array if no sites are found', function(done){
+            mockClient.getCampaignTypeList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+            campaign.getCampaignTypeList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
+
+    describe('getOptimizerTypeList', function(){
+        it ('returns an array with one result if one result is found', function(done){
+            var mockOptType = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getOptimizerTypeList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { OptimizerType : mockOptType  }  }, '']);
+                });
+            });
+            
+            campaign.getOptimizerTypeList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockOptType]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+
+        it ('returns an array with multipe results if multiple results found', function(done){
+            var mockOptType = {
+                name : 'test',
+                id   : 1
+            };
+            mockClient.getOptimizerTypeList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response:{OptimizerType: [mockOptType,mockOptType]}}, '']);
+                });
+            });
+            
+            campaign.getOptimizerTypeList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockOptType,mockOptType]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it('returns an empty array if no sites are found', function(done){
+            mockClient.getOptimizerTypeList.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+            campaign.getOptimizerTypeList(mockClient)
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(rejectSpy).not.toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
 
 
 });
