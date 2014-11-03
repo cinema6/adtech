@@ -281,5 +281,234 @@ describe('soaputils',function(){
                 .done(done);
         });
     });
+
+    describe('deleteObject',function(){
+        var mockClient, nil, optArg;
+        beforeEach(function(){
+            nil = soapUtils.nil;
+
+            optArg = null;
+
+            mockClient = {
+                deleteMethod : jasmine.createSpy('testMethod')
+            };
+
+            mockClient.deleteMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+        });
+        
+        it('returns true if the object is deleted',function(done){
+            soapUtils.deleteObject('deleteMethod','id',[mockClient,1])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(true);
+                    expect(mockClient.deleteMethod.calls[0].args[0])
+                        .toEqual({id:1});
+                })
+                .done(done);
+        });
+
+        it('rejects if the website is not deleted', function(done){
+            var e = new Error('error');
+            mockClient.deleteMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            soapUtils.deleteObject('deleteMethod','id',[mockClient,1])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+    });
+
+    describe('getList', function(){
+        var mockClient, mockData, nil, optArg;
+        beforeEach(function(){
+            nil = soapUtils.nil;
+
+            optArg = null;
+
+            mockData = [
+                { id   : 1, name : 'testData1' },
+                { id   : 2, name : 'testData2' }
+            ];
+            
+            mockClient = {
+                testMethod : jasmine.createSpy('testMethod')
+            };
+
+            mockClient.testMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[{ response : { TestType : mockData[0] }  }, '']);
+                });
+            });
+            
+        });
+
+        it ('calls the testMethod passed', function(done){
+            soapUtils.getList('testMethod','TestType','order', [mockClient])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockData[0]]);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it ('uses the orderProp name', function(done){
+            soapUtils.getList('testMethod','TestType','fishHead', [mockClient])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockData[0]]);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                    expect(optArg.fishHead).toEqual(nil);
+                })
+                .done(done);
+        });
+
+        it ('converts empty arguments to nill for the client method', function(done){
+            var mockExpr = {}, mockOrder = {};
+            soapUtils.getList('testMethod','TestType','fishHead',[mockClient])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockData[0]]);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                    expect(optArg.start).toEqual(nil);
+                    expect(optArg.end).toEqual(nil);
+                    expect(optArg.boolExpr).toEqual(nil);
+                    expect(optArg.fishHead).toEqual(nil);
+                })
+                .done(done);
+        });
+
+        it ('passes arguments to the client method', function(done){
+            var mockExpr = {}, mockOrder = {};
+            soapUtils.getList('testMethod','TestType','fishHead',
+                [mockClient,1,2,mockExpr,mockOrder])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockData[0]]);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                    expect(optArg.start).toEqual(1);
+                    expect(optArg.end).toEqual(2);
+                    expect(optArg.boolExpr).toBe(mockExpr);
+                    expect(optArg.fishHead).toBe(mockOrder);
+                })
+                .done(done);
+        });
+
+
+        it ('returns an array with one result if one result is found', function(done){
+            soapUtils.getList('testMethod','TestType','order', [mockClient])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([mockData[0]]);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it ('returns an array with multiple results if one result is found', function(done){
+            mockClient.testMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ response : { TestType : mockData }  }, '']);
+                });
+            });
+            soapUtils.getList('testMethod','TestType','order', [mockClient])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(mockData);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it ('returns an empty array if no results are found', function(done){
+            mockClient.testMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            soapUtils.getList('testMethod','TestType','order', [mockClient])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
+    
+    describe('getObject', function(){
+        var mockClient, mockData, nil, optArg;
+        beforeEach(function(){
+            nil = soapUtils.nil;
+
+            optArg = null;
+
+            mockData = { id   : 1, name : 'testData1' };
+            
+            mockClient = {
+                testMethod : jasmine.createSpy('testMethod')
+            };
+
+            mockClient.testMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[{ response : mockData  }, '']);
+                });
+            });
+            
+        });
+
+        it ('calls the testMethod passed', function(done){
+            soapUtils.getObject('testMethod','id', [mockClient, 1])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(mockData);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                })
+                .done(done);
+        });
+
+        it ('uses the idProp name', function(done){
+            soapUtils.getObject('testMethod','extid', [mockClient, 2])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(mockData);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                    expect(optArg.extid).toEqual(2);
+                })
+                .done(done);
+        });
+
+        it('sends a reject if nothing is found', function(done){
+            mockClient.testMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            soapUtils.getObject('testMethod','extid', [mockClient, 2])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(rejectSpy).toHaveBeenCalled();
+                    var err = rejectSpy.calls[0].args[0];
+                    expect(err.message).toEqual('Unable to locate object: 2.');
+                })
+                .done(done);
+        });
+
+    });
+
 });
 

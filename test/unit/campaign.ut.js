@@ -17,16 +17,19 @@ describe('campaign',function(){
             getOptimizerTypeList : jasmine.createSpy('getOptimizerTypeList')
         };
 
+        spyOn(mockSUtils,'makeAdmin');
+        spyOn(mockSUtils,'deleteObject');
+        spyOn(mockSUtils,'getList');
+        spyOn(mockSUtils,'getObject');
     });
     
     describe('createAdmin', function(){
-        beforeEach(function(){
-            spyOn(mockSUtils,'makeAdmin');
-        });
-
         it('uses soaputils makeAdmin to create admin',function(done){
             var mockKey = {}, mockCert = {};
             mockSUtils.makeAdmin.andReturn(q({}));
+            mockSUtils.deleteObject.andReturn(q({}));
+            mockSUtils.getList.andReturn(q({}));
+            mockSUtils.getObject.andReturn(q({}));
             
             campaign.createAdmin(mockKey,mockCert)
                 .then(resolveSpy,rejectSpy)
@@ -93,297 +96,42 @@ describe('campaign',function(){
 
     });
 
-    describe('deleteCampaign', function(){
-        it('returns true if the website is deleted',function(done){
-            mockClient.deleteCampaign.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[ {}, "" ]);
-                });
-            });
-
-            campaign.deleteCampaign(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                   
-                    expect(resolveSpy).toHaveBeenCalledWith(true);
-                    expect(mockClient.deleteCampaign.calls[0].args[0])
-                        .toEqual({camid:1});
-                })
-                .done(done);
+    describe ('simple wrappers',function(){
+        it('deleteCampaign', function(){
+            campaign.deleteCampaign(mockClient,1);
+            expect(mockSUtils.deleteObject)
+                .toHaveBeenCalledWith('deleteCampaign','camid',[mockClient,1]);
         });
 
-        it('rejects if the website is not deleted', function(done){
-            var e = new Error('error');
-            mockClient.deleteCampaign.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(e);
-                });
-            });
-
-            campaign.deleteCampaign(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).not.toHaveBeenCalled();
-                    expect(rejectSpy).toHaveBeenCalledWith(e);
-                })
-                .done(done);
+        it('getCampaignByExtId', function(){
+            campaign.getCampaignByExtId(mockClient,1);
+            expect(mockSUtils.getObject)
+                .toHaveBeenCalledWith('getCampaignByExtId','extid',[mockClient,1]);
         });
 
-    });
-
-    describe('getCampaignByExtId', function(){
-        it ('proxies to the client getCampaignByExtId', function(done){
-            mockClient.getCampaignByExtId.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : {}  }]);
-                });
-            });
-            
-            campaign.getCampaignByExtId(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                    
-                    expect(mockClient.getCampaignByExtId.calls[0].args[0])
-                        .toEqual({extid:1});
-                })
-                .done(done);
+        it('getCampaignById', function(){
+            campaign.getCampaignById(mockClient,1);
+            expect(mockSUtils.getObject)
+                .toHaveBeenCalledWith('getCampaignById','id',[mockClient,1]);
         });
 
-        it('rejects with error if not found', function(done){
-            mockClient.getCampaignByExtId.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{},'<>']);
-                });
-            });
-            campaign.getCampaignByExtId(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).not.toHaveBeenCalled();
-                    expect(rejectSpy.calls[0].args[0].message)
-                        .toEqual('Unable to locate campaign: 1.');
-                })
-                .done(done);
+        it('getCampaignList', function(){
+            campaign.getCampaignList(mockClient);
+            expect(mockSUtils.getList)
+                .toHaveBeenCalledWith('getCampaignList','Campaign','order',[mockClient]);
         });
 
-    });
-
-    describe('getCampaignById', function(){
-        it ('proxies to the client getCampaignById', function(done){
-            mockClient.getCampaignById.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : {}  }]);
-                });
-            });
-            
-            campaign.getCampaignById(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                    
-                    expect(mockClient.getCampaignById.calls[0].args[0])
-                        .toEqual({id:1});
-                })
-                .done(done);
+        it('getCampaignTypeList', function(){
+            campaign.getCampaignTypeList(mockClient);
+            expect(mockSUtils.getList)
+                .toHaveBeenCalledWith('getCampaignTypeList','CampaignType','order',[mockClient]);
+        
         });
 
-        it('rejects with error if not found', function(done){
-            mockClient.getCampaignById.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{},'<>']);
-                });
-            });
-            campaign.getCampaignById(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).not.toHaveBeenCalled();
-                    expect(rejectSpy.calls[0].args[0].message)
-                        .toEqual('Unable to locate campaign: 1.');
-                })
-                .done(done);
+        it('getOptimizerTypeList', function(){
+            campaign.getOptimizerTypeList(mockClient);
+            expect(mockSUtils.getList)
+                .toHaveBeenCalledWith('getOptimizerTypeList','OptimizerType','order',[mockClient]);
         });
     });
-
-    describe('getCampaignList', function(){
-        it ('returns an array with one result if one result is found', function(done){
-            var mockCampaign = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getCampaignList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : { Campaign : mockCampaign  }  }, '']);
-                });
-            });
-            
-            campaign.getCampaignList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockCampaign]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-
-        it ('returns an array with multipe results if multiple results found', function(done){
-            var mockCampaign = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getCampaignList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response:{Campaign: [mockCampaign,mockCampaign]}}, '']);
-                });
-            });
-            
-            campaign.getCampaignList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockCampaign,mockCampaign]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-        it('returns an empty array if no sites are found', function(done){
-            mockClient.getCampaignList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ }, '']);
-                });
-            });
-            
-            campaign.getCampaignList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-    });
-
-    describe('getCampaignTypeList', function(){
-        it ('returns an array with one result if one result is found', function(done){
-            var mockCampType = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getCampaignTypeList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : { CampaignType : mockCampType  }  }, '']);
-                });
-            });
-            
-            campaign.getCampaignTypeList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockCampType]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-
-        it ('returns an array with multipe results if multiple results found', function(done){
-            var mockCampType = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getCampaignTypeList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response:{CampaignType: [mockCampType,mockCampType]}}, '']);
-                });
-            });
-            
-            campaign.getCampaignTypeList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockCampType,mockCampType]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-        it('returns an empty array if no sites are found', function(done){
-            mockClient.getCampaignTypeList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ }, '']);
-                });
-            });
-            
-            campaign.getCampaignTypeList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-    });
-
-    describe('getOptimizerTypeList', function(){
-        it ('returns an array with one result if one result is found', function(done){
-            var mockOptType = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getOptimizerTypeList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : { OptimizerType : mockOptType  }  }, '']);
-                });
-            });
-            
-            campaign.getOptimizerTypeList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockOptType]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-
-        it ('returns an array with multipe results if multiple results found', function(done){
-            var mockOptType = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getOptimizerTypeList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response:{OptimizerType: [mockOptType,mockOptType]}}, '']);
-                });
-            });
-            
-            campaign.getOptimizerTypeList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockOptType,mockOptType]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-        it('returns an empty array if no sites are found', function(done){
-            mockClient.getOptimizerTypeList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ }, '']);
-                });
-            });
-            
-            campaign.getOptimizerTypeList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-    });
-
-
 });

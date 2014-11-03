@@ -1,4 +1,4 @@
-describe('index',function(){
+xdescribe('index',function(){
     var once = true, index, banner, campaign, website, admin, q, resolveSpy, rejectSpy;
     beforeEach(function(){
         if (once) { 
