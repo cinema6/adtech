@@ -1,4 +1,4 @@
-describe('adtech.campaignAdmin',function(){
+xdescribe('adtech.campaignAdmin',function(){
     var adtech, testId, expectSuccess, expectFailure, resolveSpy, rejectSpy ;
     beforeEach(function(done){
         var helpers = require('./helpers');

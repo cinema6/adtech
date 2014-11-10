@@ -17,6 +17,7 @@ describe('banner',function(){
         
         spyOn(mockSUtils,'createSoapSSLClient');
         spyOn(mockSUtils,'makeAdmin');
+        spyOn(mockSUtils,'createObject');
         spyOn(mockSUtils,'deleteObject');
         spyOn(mockSUtils,'getList');
         spyOn(mockSUtils,'getObject');

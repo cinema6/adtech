@@ -281,6 +281,78 @@ xdescribe('soaputils',function(){
                 .done(done);
         });
     });
+    
+    describe('createObject', function(){
+        var mockClient, nil, optArg;
+        beforeEach(function(){
+            nil = soapUtils.nil;
+
+            optArg = null;
+
+            mockClient = {
+                createMethod : jasmine.createSpy('testMethod')
+            };
+
+            mockClient.createMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+        });
+        
+        it('returns created object if object is created',function(done){
+            var ban = {};
+            mockClient.createMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { response : { x : 1 } }, "" ]);
+                });
+            });
+
+            soapUtils.createObject('createMethod','meth',[mockClient,ban])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
+                    expect(mockClient.createMethod.calls[0].args[0]).toEqual({meth:ban});
+                })
+                .done(done);
+        });
+
+        it('rejects if the create receives an error', function(done){
+            var e = new Error('error'), ban = {};
+            mockClient.createMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            soapUtils.createObject('createMethod','meth',[mockClient,ban])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+        
+        it('rejects if the create returns an empty response', function(done){
+            var ban = {};
+            mockClient.createMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { }, "" ]);
+                });
+            });
+
+
+            soapUtils.createObject('createMethod','meth',[mockClient,ban])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(rejectSpy).toHaveBeenCalled();
+                })
+                .done(done);
+        });
+    });
+
 
     describe('deleteObject',function(){
         var mockClient, nil, optArg;
@@ -492,6 +564,30 @@ xdescribe('soaputils',function(){
                 .done(done);
         });
 
+        it ('uses the idProp name list', function(done){
+            soapUtils.getObject('testMethod',['extid','id2'], [mockClient, 2, 3])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(mockData);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                    expect(optArg.extid).toEqual(2);
+                    expect(optArg.id2).toEqual(3);
+                })
+                .done(done);
+        });
+
+        it ('uses the idProp name list with nil', function(done){
+            soapUtils.getObject('testMethod',['extid','id2'], [mockClient, 2 ])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(mockData);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                    expect(optArg.extid).toEqual(2);
+                    expect(optArg.id2).toEqual(nil);
+                })
+                .done(done);
+        });
+
         it('sends a reject if nothing is found', function(done){
             mockClient.testMethod.andCallFake(function(opts,cb){
                 process.nextTick(function(){
@@ -563,7 +659,7 @@ xdescribe('soaputils',function(){
                 .done(done);
         });
         
-        it('rejects if the update receives an error', function(done){
+        it('rejects if the update returns an empty response', function(done){
             var ban = {};
             mockClient.updateMethod.andCallFake(function(opts,cb){
                 process.nextTick(function(){
