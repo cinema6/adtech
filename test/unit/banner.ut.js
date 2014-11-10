@@ -1,4 +1,4 @@
-xdescribe('banner',function(){
+describe('banner',function(){
     var flush = true, q, banner, mockSUtils, resolveSpy, rejectSpy, mockClient;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
@@ -14,50 +14,71 @@ xdescribe('banner',function(){
             getBannerList : jasmine.createSpy('getBannerList'),
             updateBanner  : jasmine.createSpy('updateBanner')
         };
+        
+        spyOn(mockSUtils,'createSoapSSLClient');
+        spyOn(mockSUtils,'makeAdmin');
+        spyOn(mockSUtils,'deleteObject');
+        spyOn(mockSUtils,'getList');
+        spyOn(mockSUtils,'getObject');
+        spyOn(mockSUtils,'updateObject');
 
     });
+    
+    it('uses soaputils makeAdmin to create admin',function(){
+        var args, mockKey = {}, mockCert = {};
+        banner.createAdmin(mockKey,mockCert);
+        args = mockSUtils.makeAdmin.calls[0].args;
+        expect(args[0]).toEqual(mockKey);
+        expect(args[1]).toEqual(mockCert);
+        expect(args[2]).toEqual(banner);
+        expect(args[3]).toEqual([
+            'createBanner',
+            'deleteBanner',
+            'getBannerInfoList',
+            'getBannerList',
+            'updateBanner' 
+        ]);
+    });
 
-    describe('createClient',function(){
-        beforeEach(function(){
-            spyOn(mockSUtils,'createSoapSSLClient');
+    
+    it('createClient', function(){
+        var args, key = {}, cert = {};
+        banner.createClient(key,cert);
+        args = mockSUtils.createSoapSSLClient.calls[0].args;
+        expect(args[0]).toMatch('/wsdl/WSBannerAdmin_v13.wsdl');
+        expect(args[1]).toEqual({
+            strict : true,
+            endpoint :'https://ws.us-ec.adtechus.com/WSBannerAdmin_v13/'
         });
+        expect(args[2]).toEqual(key);
+        expect(args[3]).toEqual(cert);
+    });
 
-        it('should resolve with a client if succeeds',function(done){
-            var client = {}, key = {}, cert = {};
-            mockSUtils.createSoapSSLClient.andReturn(q(client));
-            banner.createClient(key,cert)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith(client);
-                    expect(rejectSpy).not.toHaveBeenCalled(); 
+    it('deleteBanner', function(){
+        banner.deleteBanner(mockClient,1);
+        expect(mockSUtils.deleteObject)
+            .toHaveBeenCalledWith('deleteBanner','bannerId',[mockClient,1]);
+    });
 
-                    var args = mockSUtils.createSoapSSLClient.calls[0].args;
-                    expect(args[0]).toMatch('./wsdl/WSBannerAdmin_v13.wsdl');
-                    expect(args[1]).toEqual({
-                        strict : true,
-                        endpoint :'https://ws.us-ec.adtechus.com/WSBannerAdmin_v13/'
-                    });
-                    expect(args[2]).toEqual(key);
-                    expect(args[3]).toEqual(cert);
-                })
-                .done(done);
-        });
+    it('getBannerList', function(){
+        banner.getBannerList(mockClient);
+        expect(mockSUtils.getList)
+            .toHaveBeenCalledWith('getBannerList','Banner','order',[mockClient]);
+    });
 
-        it('should reject with an error if it fails', function(done){
-            var err = {};
-            mockSUtils.createSoapSSLClient.andCallFake(function(){
-                return q.reject(err);
-            });
-            banner.createClient()
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).not.toHaveBeenCalled();
-                    expect(rejectSpy).toHaveBeenCalledWith(err); 
-                })
-                .done(done);
-        });
+    it('getBannerInfoList', function(){
+        banner.getBannerInfoList(mockClient);
+        expect(mockSUtils.getList)
+            .toHaveBeenCalledWith('getBannerInfoList','BannerInfo','order',[mockClient]);
+    });
 
-    })
+    it('updateBanner', function(){
+        var upd = {};
+        banner.updateBanner(mockClient,upd);
+        expect(mockSUtils.updateObject)
+            .toHaveBeenCalledWith('updateBanner','bann',[mockClient,upd]);
+    });
+
 
     describe('createBanner', function(){
         beforeEach(function(){
@@ -111,172 +132,4 @@ xdescribe('banner',function(){
         });
     });
 
-    describe('deleteBanner', function(){
-        it('returns true if the banner is deleted',function(done){
-            mockClient.deleteBanner.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[ {}, "" ]);
-                });
-            });
-
-            banner.deleteBanner(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                   
-                    expect(resolveSpy).toHaveBeenCalledWith(true);
-                    expect(mockClient.deleteBanner.calls[0].args[0])
-                        .toEqual({bannerId:1});
-                })
-                .done(done);
-        });
-
-        it('rejects if the banner is not deleted', function(done){
-            var e = new Error('error');
-            mockClient.deleteBanner.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(e);
-                });
-            });
-
-            banner.deleteBanner(mockClient,1)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).not.toHaveBeenCalled();
-                    expect(rejectSpy).toHaveBeenCalledWith(e);
-                })
-                .done(done);
-        });
-
-    });
-
-    describe('getBannerList', function(){
-        it ('returns an array with one result if one result is found', function(done){
-            var mockBanner = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getBannerList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : { Banner : mockBanner  }  }, '']);
-                });
-            });
-            
-            banner.getBannerList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockBanner]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-
-        it ('returns an array with multipe results if multiple results found', function(done){
-            var mockBanner = {
-                name : 'test',
-                id   : 1
-            };
-            mockClient.getBannerList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : { Banner:{0:mockBanner,1:mockBanner} } }, '']);
-                });
-            });
-            
-            banner.getBannerList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([mockBanner,mockBanner]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-
-        it('returns an empty array if no results are found', function(done){
-            mockClient.getBannerList.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ }, '']);
-                });
-            });
-            
-            banner.getBannerList(mockClient)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([]);
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                })
-                .done(done);
-        });
-    });
-
-    describe('updateBanner', function(){
-        it('returns true if the banner is updated',function(done){
-            var ban = {};
-            mockClient.updateBanner.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[ { response : { x : 1 } }, "" ]);
-                });
-            });
-
-            banner.updateBanner(mockClient,ban)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                   
-                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
-                    expect(mockClient.updateBanner.calls[0].args[0]).toEqual({bann:ban});
-                })
-                .done(done);
-        });
-
-        it('rejects if the banner is not updated', function(done){
-            var e = new Error('error');
-            mockClient.updateBanner.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(e);
-                });
-            });
-
-            banner.updateBanner(mockClient,{})
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).not.toHaveBeenCalled();
-                    expect(rejectSpy).toHaveBeenCalledWith(e);
-                })
-                .done(done);
-        });
-    });
-
-    describe('createAdmin', function(){
-        beforeEach(function(){
-            spyOn(mockSUtils,'makeAdmin');
-        });
-
-        it('uses soaputils makeAdmin to create admin',function(done){
-            var mockKey = {}, mockCert = {};
-            mockSUtils.makeAdmin.andReturn(q({}));
-            
-            banner.createAdmin(mockKey,mockCert)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                    
-                    var args = mockSUtils.makeAdmin.calls[0].args;
-                    expect(args[0]).toEqual(mockKey);
-                    expect(args[1]).toEqual(mockCert);
-                    expect(args[2]).toEqual(banner);
-                    expect(args[3]).toEqual([
-                        'createBanner',
-                        'deleteBanner',
-                        'getBannerInfoList',
-                        'getBannerList',
-                        'updateBanner' 
-                    ]);
-                })
-                .done(done);
-        });
-    });
 });

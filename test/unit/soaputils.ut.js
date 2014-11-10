@@ -1,4 +1,4 @@
-describe('soaputils',function(){
+xdescribe('soaputils',function(){
     var flush = true, q, soapUtils, resolveSpy, rejectSpy, isArray;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
@@ -504,6 +504,78 @@ describe('soaputils',function(){
                     expect(rejectSpy).toHaveBeenCalled();
                     var err = rejectSpy.calls[0].args[0];
                     expect(err.message).toEqual('Unable to locate object: 2.');
+                })
+                .done(done);
+        });
+
+    });
+
+    describe('updateObject', function(){
+        var mockClient, nil, optArg;
+        beforeEach(function(){
+            nil = soapUtils.nil;
+
+            optArg = null;
+
+            mockClient = {
+                updateMethod : jasmine.createSpy('testMethod')
+            };
+
+            mockClient.updateMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+        });
+        
+        it('returns updated object if object is updated',function(done){
+            var ban = {};
+            mockClient.updateMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { response : { x : 1 } }, "" ]);
+                });
+            });
+
+            soapUtils.updateObject('updateMethod','bann',[mockClient,ban])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
+                    expect(mockClient.updateMethod.calls[0].args[0]).toEqual({bann:ban});
+                })
+                .done(done);
+        });
+
+        it('rejects if the update receives an error', function(done){
+            var e = new Error('error'), ban = {};
+            mockClient.updateMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            soapUtils.updateObject('updateMethod','bann',[mockClient,ban])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+        
+        it('rejects if the update receives an error', function(done){
+            var ban = {};
+            mockClient.updateMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(null,[ { }, "" ]);
+                });
+            });
+
+
+            soapUtils.updateObject('updateMethod','bann',[mockClient,ban])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(rejectSpy).toHaveBeenCalled();
                 })
                 .done(done);
         });
