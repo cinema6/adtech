@@ -1,4 +1,4 @@
-xdescribe('soaputils',function(){
+describe('soaputils',function(){
     var flush = true, q, soapUtils, resolveSpy, rejectSpy, isArray;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
@@ -315,6 +315,46 @@ xdescribe('soaputils',function(){
                 .then(function(){
                     expect(resolveSpy).toHaveBeenCalledWith({x:1});
                     expect(mockClient.createMethod.calls[0].args[0]).toEqual({meth:ban});
+                })
+                .done(done);
+        });
+
+        it ('uses the idProp name list', function(done){
+            var obj1 = {}, obj2 = {};
+            mockClient.createMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[ { response : { x : 1 } }, "" ]);
+                });
+            });
+
+            soapUtils.createObject('createMethod',['ob1','ob2'], [mockClient, obj1, obj2])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
+                    expect(mockClient.createMethod).toHaveBeenCalled();
+                    expect(optArg.ob1).toBe(obj1);
+                    expect(optArg.ob2).toBe(obj2);
+                })
+                .done(done);
+        });
+
+        it ('uses the idProp name list', function(done){
+            var obj1 = {}, obj2 = {};
+            mockClient.createMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[ { response : { x : 1 } }, "" ]);
+                });
+            });
+
+            soapUtils.createObject('createMethod',['ob1','ob2'], [mockClient, obj1 ])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith({x:1});
+                    expect(mockClient.createMethod).toHaveBeenCalled();
+                    expect(optArg.ob1).toBe(obj1);
+                    expect(optArg.ob2).toEqual(nil);
                 })
                 .done(done);
         });

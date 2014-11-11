@@ -1,4 +1,4 @@
-describe('adtech.websiteAdmin',function(){
+xdescribe('adtech.websiteAdmin',function(){
     var adtech, testId, expectSuccess, expectFailure, resolveSpy, rejectSpy;
     beforeEach(function(done){
         var helpers = require('./helpers');

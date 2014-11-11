@@ -1,4 +1,4 @@
-xdescribe('AOVE',function(){
+describe('AOVE',function(){
     var AOVE, nil;
     beforeEach(function(){
         AOVE = require('../../lib/aove');

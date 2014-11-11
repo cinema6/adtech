@@ -1,19 +1,10 @@
 describe('banner',function(){
-    var flush = true, q, banner, mockSUtils, resolveSpy, rejectSpy, mockClient;
+    var flush = true, banner, mockSUtils, mockClient;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
         banner       = require('../../lib/banner');
         mockSUtils   = require('../../lib/soaputils');
-        q            = require('q');
-        resolveSpy   = jasmine.createSpy('resolve');
-        rejectSpy    = jasmine.createSpy('reject');
-        
-        mockClient = {
-            createBanner  : jasmine.createSpy('createBanner'),
-            deleteBanner  : jasmine.createSpy('deleteBanner'),
-            getBannerList : jasmine.createSpy('getBannerList'),
-            updateBanner  : jasmine.createSpy('updateBanner')
-        };
+        mockClient = { };
         
         spyOn(mockSUtils,'createSoapSSLClient');
         spyOn(mockSUtils,'makeAdmin');
@@ -54,6 +45,27 @@ describe('banner',function(){
         expect(args[2]).toEqual(key);
         expect(args[3]).toEqual(cert);
     });
+    
+    it('createBanner - with timeRange', function(){
+        var bannerObj = {}, bannerInfoObj = {};
+        banner.createBanner(mockClient,1,bannerObj,bannerInfoObj,2);
+        expect(mockSUtils.createObject)
+            .toHaveBeenCalledWith('createBanner',
+            ['bann','campaignId','bannerInfo','bannerTimeRangeNo'],
+            [mockClient,bannerObj,1,bannerInfoObj,2]
+        );
+    });
+
+    it('createBanner - without timeRange', function(){
+        var bannerObj = {}, bannerInfoObj = {};
+        banner.createBanner(mockClient,1,bannerObj,bannerInfoObj);
+        expect(mockSUtils.createObject)
+            .toHaveBeenCalledWith('createBanner',
+            ['bann','campaignId','bannerInfo','bannerTimeRangeNo'],
+            [mockClient,bannerObj,1,bannerInfoObj,1]
+        );
+    });
+
 
     it('deleteBanner', function(){
         banner.deleteBanner(mockClient,1);
@@ -78,59 +90,6 @@ describe('banner',function(){
         banner.updateBanner(mockClient,upd);
         expect(mockSUtils.updateObject)
             .toHaveBeenCalledWith('updateBanner','bann',[mockClient,upd]);
-    });
-
-
-    describe('createBanner', function(){
-        beforeEach(function(){
-            mockClient.createBanner.andCallFake(function(opts,cb){
-                process.nextTick(function(){
-                    cb(null,[{ response : {}  }]);
-                });
-            });
-        });
-
-        it('maps parameters to parameter properties',function(done){
-            var bann = {  },
-                bannerInfo = {  };
-
-            banner.createBanner(mockClient,12345,bann,bannerInfo,2)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                    
-                    var args = mockClient.createBanner.calls[0].args;
-                    expect(args[0]).toEqual({
-                        bann : bann,
-                        campaignId : 12345,
-                        bannerInfo : bannerInfo,
-                        bannerTimeRangeNo : 2 
-                    });
-                })
-                .done(done);
-        });
-
-        it('sets a default timeRangeNo to 1',function(done){
-            var bann = {  },
-                bannerInfo = {  };
-
-            banner.createBanner(mockClient,12345,bann,bannerInfo)
-                .then(resolveSpy,rejectSpy)
-                .then(function(){
-                    expect(resolveSpy).toHaveBeenCalled();
-                    expect(rejectSpy).not.toHaveBeenCalled();
-                    
-                    var args = mockClient.createBanner.calls[0].args;
-                    expect(args[0]).toEqual({
-                        bann : bann,
-                        campaignId : 12345,
-                        bannerInfo : bannerInfo,
-                        bannerTimeRangeNo : 1 
-                    });
-                })
-                .done(done);
-        });
     });
 
 });

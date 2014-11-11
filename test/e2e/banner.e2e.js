@@ -1,4 +1,4 @@
-xdescribe('adtech.bannerAdmin',function(){
+describe('adtech.bannerAdmin',function(){
     var adtech, testId, expectSuccess, expectFailure, resolveSpy, rejectSpy,
         IBanner, IFreq, campaignId, scriptTag;
     beforeEach(function(done){
