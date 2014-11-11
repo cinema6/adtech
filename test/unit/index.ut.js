@@ -1,16 +1,19 @@
 describe('index',function(){
-    var once = true, index, banner, campaign, website, admin, q, resolveSpy, rejectSpy;
+    var once = true, index, banner, campaign, customer, website,
+        admin, q, resolveSpy, rejectSpy;
     beforeEach(function(){
         if (once) { 
             for (var m in require.cache){ delete require.cache[m]; }
             banner      = require('../../lib/banner');
             campaign    = require('../../lib/campaign');
+            customer    = require('../../lib/customer');
             website     = require('../../lib/website');
             constants   = require('../../lib/constants');
             q           = require('q');
             admin       = {},
             spyOn(banner,'createAdmin').andReturn(q(admin));
             spyOn(campaign,'createAdmin').andReturn(q(admin));
+            spyOn(customer,'createAdmin').andReturn(q(admin));
             spyOn(website,'createAdmin').andReturn(q(admin));
             index   = require('../../index.js');
         }
@@ -37,6 +40,17 @@ describe('index',function(){
                 expect(resolveSpy).toHaveBeenCalled();
                 expect(campaign.createAdmin).toHaveBeenCalled();
                 expect(index.campaignAdmin).toBe(admin);
+            })
+            .done(done);
+        });
+        
+        it('createCustomerAdmin is proxied',function(done){
+            index.createCustomerAdmin()
+            .then(resolveSpy,rejectSpy)
+            .then(function(){
+                expect(resolveSpy).toHaveBeenCalled();
+                expect(customer.createAdmin).toHaveBeenCalled();
+                expect(index.customerAdmin).toBe(admin);
             })
             .done(done);
         });

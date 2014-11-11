@@ -10,11 +10,14 @@ function wrap (m,o){
 
 module.exports = {
     bannerAdmin         : null,
+    campaignAdmin       : null,
+    customerAdmin       : null,
     websiteAdmin        : null,
     
     AOVE                : require('./lib/aove'),
     constants           : require('./lib/constants'),
-    createBannerAdmin   : wrap(require('./lib/banner').createAdmin, 'bannerAdmin'),
+    createBannerAdmin   : wrap(require('./lib/banner').createAdmin,   'bannerAdmin'),
     createCampaignAdmin : wrap(require('./lib/campaign').createAdmin, 'campaignAdmin'),
-    createWebsiteAdmin  : wrap(require('./lib/website').createAdmin,'websiteAdmin')
+    createCustomerAdmin : wrap(require('./lib/customer').createAdmin, 'customerAdmin'),
+    createWebsiteAdmin  : wrap(require('./lib/website').createAdmin,  'websiteAdmin')
 };
