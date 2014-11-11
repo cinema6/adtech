@@ -36,7 +36,8 @@ describe('customer',function(){
             'getCustomerByExtId',
             'getCustomerById',
             'getCustomerList',
-            'updateCustomer'
+            'updateCustomer',
+            'makeAdvertiserList'
         ]);
     });
     
@@ -97,7 +98,7 @@ describe('customer',function(){
         expect(mockSUtils.createObject)
             .toHaveBeenCalledWith('createCustomer','cust',[mockClient,obj]);
     });
-    
+
     it('deleteCustomer', function(){
         admin.deleteCustomer(mockClient,1);
         expect(mockSUtils.deleteObject)
@@ -129,5 +130,28 @@ describe('customer',function(){
             .toHaveBeenCalledWith('updateCustomer','cust',[mockClient,upd]);
     });
 
+    it('makeAdvertiserList', function(){
+        expect(admin.makeAdvertiserList({}, [{id:'id1'},{id:'id2'}])).toEqual({
+            Items : {
+                attributes : { 
+                    'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/CustomerManagement/'
+                },
+                Item : [ 
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:Advertiser',
+                        },
+                        id : 'id1'
+                    },
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:Advertiser',
+                        },
+                        id : 'id2'
+                    }
+                ]
+            } 
+        });
+    });
 
 });

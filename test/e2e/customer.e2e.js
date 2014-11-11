@@ -1,11 +1,12 @@
 describe('adtech.customerAdmin',function(){
-    var adtech, expectSuccess, expectFailure, resolveSpy, rejectSpy, testData, testRun;
+    var adtech, expectSuccess, expectFailure, resolveSpy, rejectSpy,
+        testData, testRun, compData;
     beforeEach(function(done){
         var helpers = require('./helpers');
         resolveSpy    = helpers.setupSpy('resolve');
         rejectSpy     = helpers.setupSpy('reject');
         expectSuccess = helpers.setExpectation('resolve');
-        expectFailure = helpers.setExpectation('reject');
+        expectFailure = helpers.setExpectation('reject',true);
         
         if (adtech){
             return done();
@@ -15,9 +16,17 @@ describe('adtech.customerAdmin',function(){
         q            = require('q');
         testRun      = 'c6-e2e-' + helpers.uuid() + '-';
         testData     = new helpers.TestData(testRun);
-        
+        compData     = {
+            address : {
+                address1 : '100 Nassau Street',
+                city     : 'Princeton',
+                country  : 'US',
+                zip      : '08540'
+            }
+        };
         testData.createRecord('Adv1');
         testData.createRecord('Adv2');
+        testData.createRecord('Cust1');
 
         adtech.createCustomerAdmin().catch(done).finally(done,done);
     });
@@ -29,14 +38,7 @@ describe('adtech.customerAdmin',function(){
     it('creates advertiser Adv1',function(done){
         var rec = testData.getRecord('Adv1'),
             ad = {
-                companyData     : {
-                    address : {
-                        address1 : '100 Nassau Street',
-                        city     : 'Princeton',
-                        country  : 'US',
-                        zip      : '08540'
-                    }
-                },
+                companyData     : compData,
                 extId           : rec.extId,
                 name            : rec.uname
             };
@@ -56,14 +58,7 @@ describe('adtech.customerAdmin',function(){
     it('creates advertiser Adv2',function(done){
         var rec = testData.getRecord('Adv2'),
             ad = {
-                companyData     : {
-                    address : {
-                        address1 : '242 Nassau Street',
-                        city     : 'Princeton',
-                        country  : 'US',
-                        zip      : '08542'
-                    }
-                },
+                companyData     : compData,
                 extId           : rec.extId,
                 name            : rec.uname
             };
@@ -119,6 +114,77 @@ describe('adtech.customerAdmin',function(){
         .done(done,done);
     });
 
+    it('creates a customer',function(done){
+        var rec = testData.getRecord('Cust1'),
+            adv1 = testData.getRecord('Adv1'),
+            adv2 = testData.getRecord('Adv2'),
+            customer = {
+                advertiser : adtech.customerAdmin.makeAdvertiserList([
+                    { id : adv1.data.id } , { id : adv2.data.id }
+                ]),
+                companyData     : compData,
+                extId           : rec.extId,
+                name            : rec.uname
+            };
+        adtech.customerAdmin.createCustomer(customer)
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var result = resolveSpy.arg();
+            testData.set('Cust1',result.id,result);
+            expect(result.name).toEqual(customer.name);
+            expect(result.advertiser.length).toEqual(2);
+        })
+        .done(done,done);
+    });
+    
+    it('gets a customer by extid', function(done){
+        var rec = testData.getRecord('Cust1');
+        adtech.customerAdmin.getCustomerByExtId(rec.extId)
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var result = resolveSpy.arg();
+            expect(result.name).toEqual(rec.uname);
+            expect(result.extId).toEqual(rec.extId);
+        })
+        .done(done,done);
+    });
+
+    it('gets a customer by id', function(done){
+        var rec = testData.getRecord('Cust1');
+        adtech.customerAdmin.getCustomerById(rec.id)
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var result = resolveSpy.arg();
+            expect(result.name).toEqual(rec.uname);
+            expect(result.extId).toEqual(rec.extId);
+        })
+        .done(done,done);
+    });
+    
+    it('gets customer list by name', function(done){
+        var aove = new adtech.AOVE();
+        aove.addExpression(new adtech.AOVE.StringExpression('name','%' + testRun + '%','LIKE'));
+        adtech.customerAdmin.getCustomerList(null,null,aove)
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .then(function(){
+            var ads = resolveSpy.arg();
+            expect(ads.length).toEqual(1);
+        })
+        .done(done,done);
+    });
+
+    it('deletes Cust1', function(done){
+        var rec = testData.getRecord('Cust1');
+        adtech.customerAdmin.deleteCustomer(rec.id)
+        .then(resolveSpy,rejectSpy)
+        .then(expectSuccess)
+        .done(done,done);
+    });
+
     it('deletes Adv1', function(done){
         var rec = testData.getRecord('Adv1');
         adtech.customerAdmin.deleteAdvertiser(rec.id)
@@ -148,22 +214,18 @@ describe('adtech.customerAdmin',function(){
         .done(done,done);
     });
 
-/*
-    it('creates a customer',function(done){
-        var customer = {
-            extId           : testId,
-            name            : 'customer-' + testId
-        };
-
-        adtech.customerAdmin.createCustomer(customer)
+    it('confirms customers are deleted', function(done){
+        var aove = new adtech.AOVE();
+        aove.addExpression(new adtech.AOVE.StringExpression('name','%' + testRun + '%','LIKE'));
+        adtech.customerAdmin.getCustomerList(null,null,aove)
         .then(resolveSpy,rejectSpy)
         .then(expectSuccess)
         .then(function(){
-            var result = resolveSpy.arg();
-            expect(result.name).toEqual(customer.name);
+            var ads = resolveSpy.arg();
+            expect(ads.length).toEqual(0);
         })
         .done(done,done);
     });
-*/
+
 });
 
