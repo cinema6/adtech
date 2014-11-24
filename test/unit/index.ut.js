@@ -67,6 +67,25 @@ describe('index',function(){
         });
     });
 
+    describe('createClient',function(){
+        it('creates all admins',function(done){
+            index.createClient()
+            .then(resolveSpy,rejectSpy)
+            .then(function(){
+                expect(resolveSpy).toHaveBeenCalled();
+                expect(banner.createAdmin).toHaveBeenCalled();
+                expect(campaign.createAdmin).toHaveBeenCalled();
+                expect(customer.createAdmin).toHaveBeenCalled();
+                expect(website.createAdmin).toHaveBeenCalled();
+                expect(index.bannerAdmin).toBe(admin);
+                expect(index.campaignAdmin).toBe(admin);
+                expect(index.customerAdmin).toBe(admin);
+                expect(index.websiteAdmin).toBe(admin);
+            })
+            .done(done);
+        });
+    });
+
     describe('types',function(){
         it('AOVE',function(){
             expect(index.AOVE).toBeDefined();

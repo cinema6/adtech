@@ -1,4 +1,4 @@
-describe('adtech.customerAdmin',function(){
+xdescribe('adtech.customerAdmin',function(){
     var adtech, expectSuccess, expectFailure, resolveSpy, rejectSpy,
         testData, testRun, compData;
     beforeEach(function(done){
@@ -17,13 +17,16 @@ describe('adtech.customerAdmin',function(){
         testRun      = 'c6-e2e-' + helpers.uuid() + '-';
         testData     = new helpers.TestData(testRun);
         compData     = {
-            address : {
-                address1 : '100 Nassau Street',
-                city     : 'Princeton',
-                country  : 'US',
-                zip      : '08540'
-            }
+            url : "http://www.cinema6.com"
         };
+//        compData     = {
+//            address : {
+//                address1 : '100 Nassau Street',
+//                city     : 'Princeton',
+//                country  : 'US',
+//                zip      : '08540'
+//            }
+//        };
         testData.createRecord('Adv1');
         testData.createRecord('Adv2');
         testData.createRecord('Cust1');
