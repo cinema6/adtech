@@ -132,6 +132,32 @@ describe('soaputils',function(){
         });
     });
 
+    describe('makeTypedList', function(){
+        var rawList;
+        beforeEach(function(){
+            rawList = [
+                { name : 'obj1', val  : 1 },
+                { name : 'obj2', val  : 2 },
+                { name : 'obj3', val  : 3 }
+            ];
+        });
+
+        it('uses namespace and typename params',function(){
+            expect(soapUtils.makeTypedList('abc','TestType',rawList)).toEqual(
+                {
+                    Items : { 
+                        attributes : { 'xmlns:cm' : 'abc' },
+                        Item : [
+                            {attributes:{'xsi:type':'cm:TestType'},name:'obj1',val:1},
+                            {attributes:{'xsi:type':'cm:TestType'},name:'obj2',val:2},
+                            {attributes:{'xsi:type':'cm:TestType'},name:'obj3',val:3}
+                        ]
+                    }
+                }
+            );
+        });
+    });
+
     describe('createSoapSSLClient',function(){
         var mockClient, mockFs, mockSoap;
         beforeEach(function(){

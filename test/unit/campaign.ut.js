@@ -9,6 +9,8 @@ describe('campaign',function(){
 
         spyOn(mockSUtils,'createSoapSSLClient');
         spyOn(mockSUtils,'makeAdmin');
+        spyOn(mockSUtils,'makeTypedList');
+        spyOn(mockSUtils,'createObject');
         spyOn(mockSUtils,'deleteObject');
         spyOn(mockSUtils,'getList');
         spyOn(mockSUtils,'getObject');
@@ -22,12 +24,15 @@ describe('campaign',function(){
         expect(args[1]).toEqual(mockCert);
         expect(args[2]).toEqual(campaign);
         expect(args[3]).toEqual([
+            'createCampaign',
             'deleteCampaign',
+            'getAdGoalTypeList',
             'getCampaignByExtId',
             'getCampaignById',
             'getCampaignList',
             'getCampaignTypeList',
-            'getOptimizerTypeList'
+            'getOptimizerTypeList',
+            'makeDateRangeList'
         ]);
     });
 
@@ -44,10 +49,23 @@ describe('campaign',function(){
         expect(args[3]).toEqual(cert);
     });
 
+    it('createCampaign', function(){
+        var obj = {};
+        campaign.createCampaign(mockClient,obj);
+        expect(mockSUtils.createObject)
+            .toHaveBeenCalledWith('createCampaign','wcam',[mockClient,obj]);
+    });
+
     it('deleteCampaign', function(){
         campaign.deleteCampaign(mockClient,1);
         expect(mockSUtils.deleteObject)
             .toHaveBeenCalledWith('deleteCampaign','camid',[mockClient,1]);
+    });
+    
+    it('getAdGoalTypeList', function(){
+        campaign.getAdGoalTypeList(mockClient);
+        expect(mockSUtils.getList)
+            .toHaveBeenCalledWith('getAdGoalTypeList','AdGoalType','order',[mockClient]);
     });
 
     it('getCampaignByExtId', function(){
@@ -79,5 +97,16 @@ describe('campaign',function(){
         campaign.getOptimizerTypeList(mockClient);
         expect(mockSUtils.getList)
             .toHaveBeenCalledWith('getOptimizerTypeList','OptimizerType','order',[mockClient]);
+    });
+
+    it('makeDateRangeList',function(){
+        var mockList = [{p:1},{p:2}];
+        campaign.makeDateRangeList(mockClient,mockList);
+        expect(mockSUtils.makeTypedList)
+            .toHaveBeenCalledWith(
+                'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/',
+                'DateRange',
+                mockList
+                );
     });
 });
