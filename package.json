@@ -1,6 +1,6 @@
 {
   "name": "adtech",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Wrapper library for working with Adtech SOAP API.",
   "main": "index.js",
   "scripts": {
@@ -18,8 +18,8 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": "^0.6.1"
   },
-   "repository": {
-      "type": "git",
-      "url": "git@github.com:cinema6/adtech.git"
-   }
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cinema6/adtech.git"
+  }
 }
