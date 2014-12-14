@@ -216,6 +216,11 @@ describe('adtech.index',function(){
             campaign = {
                 adGoalTypeId    : adGoalTypeRec.id,
                 advertiserId    : advRec.id,
+                campaignFeatures  : adtech.campaignAdmin.makeCampaignFeatures({
+                    keywordLevel : true,
+                    placements   : true,
+                    volume       : true
+                }),
                 campaignTypeId  : cmpTypeRec.id,
                 customerId      : custRec.id,
                 dateRangeList   : adtech.campaignAdmin.makeDateRangeList([{

@@ -1,3 +1,178 @@
+describe('CampaignFeatures',function(){
+    var flush = true, campaign;
+    beforeEach(function(){
+        if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
+        campaign     = require('../../lib/campaign');
+    });
+
+    it('can be instantiated',function(){
+        var c1 = new campaign.CampaignFeatures(),
+            c2 = new campaign.CampaignFeatures();
+        expect(c1).toBeDefined();
+        expect(c1._featureSet).toBeDefined();
+        expect(c2).toBeDefined();
+        expect(c2._featureSet).toBeDefined();
+        expect(c1).not.toBe(c2);
+        expect(c1._featureSet).not.toBe(c2._featureSet);
+    });
+
+    it('set method sets a feature with boolean true',function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1._featureSet.f1).not.toBeDefined();
+        c1.set('f1',true);
+        expect(c1._featureSet.f1).toEqual({
+            locked: false,
+            shared: false,
+            visible: true
+        });
+    });
+
+    it('set method sets a feature with boolean false',function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1._featureSet.f1).not.toBeDefined();
+        c1.set('f1',false);
+        expect(c1._featureSet.f1).toEqual({
+            locked: false,
+            shared: false,
+            visible: false
+        });
+    });
+
+    it('set method takes an object for feature value', function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1._featureSet.f1).not.toBeDefined();
+        c1.set('f1',{ locked: false, shared: false, visible: true });
+        expect(c1._featureSet.f1).toEqual({
+            locked: false,
+            shared: false,
+            visible: true
+        });
+    });
+
+    it('set method takes an object with partial values for feature value', function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1._featureSet.f1).not.toBeDefined();
+        c1.set('f1',{  visible: true });
+        expect(c1._featureSet.f1).toEqual({
+            locked: false,
+            shared: false,
+            visible: true
+        });
+    });
+
+    it('set method with no feature value throws an exception', function(){
+        expect(function(){
+            var c1 = new campaign.CampaignFeatures();
+            c1.set('f1');
+        }).toThrow('CampaignFeatures.set requires name,value parameters.');
+    });
+
+    it('set method with null feature value defaults to true', function(){
+        expect(function(){
+            var c1 = new campaign.CampaignFeatures();
+            c1.set('f1');
+        }).toThrow('CampaignFeatures.set requires name,value parameters.');
+    });
+
+    it('set method overrides earlier feature setting',function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1._featureSet.f1).not.toBeDefined();
+        c1.set('f1',true);
+        expect(c1._featureSet.f1).toEqual({
+            locked: false,
+            shared: false,
+            visible: true
+        });
+        c1.set('f1',false);
+        expect(c1._featureSet.f1).toEqual({
+            locked: false,
+            shared: false,
+            visible: false
+        });
+    });
+
+    it('get method returns a copy of the feature setting if it exists',function(){
+        var c1 = new campaign.CampaignFeatures(), v1;
+        c1.set('f1',true);
+        v1 = c1.get('f1');
+        expect(v1).toEqual({
+            locked: false,
+            shared: false,
+            visible: true
+        });
+        expect(v1).not.toBe(c1._featureSet.f1);
+        v1.visible = false;
+        expect(c1._featureSet.f1.visible).toEqual(true);
+    });
+
+    it('get method returns null if feature setting does not exist',function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1.get('f1')).toBeNull();
+    });
+
+    it('remove method removes a setting from the feature set',function(){
+        var c1 = new campaign.CampaignFeatures();
+        c1.set('f1',true);
+        expect(c1.get('f1')).not.toBeNull();
+        c1.remove('f1');
+        expect(c1.get('f1')).toBeNull();
+    });
+
+    it('remove method is ok if called on non existing feature',function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1.get('f1')).toBeNull();
+        c1.remove('f1');
+        expect(c1.get('f1')).toBeNull();
+    });
+
+    it('valueOf returns node-soap formatted object', function(){
+        var c1 = new campaign.CampaignFeatures();
+        c1.set('f1',true);
+        c1.set('f2',true);
+        c1.set('f3',false);
+        expect(c1.valueOf()).toEqual({
+            attributes: {
+              'xmlns:cm'  : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/',
+              'xmlns:xsd' : 'http://www.w3.org/2001/XMLSchema'
+            },
+            Keys: {
+                Item: [
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f1' },
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f2' },
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f3' }
+                ]
+            },
+            Values : {
+                Item: [
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'1'}
+                    },
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'1'}
+                    },
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'0'}
+                    }
+                ]
+            }
+        });
+    });
+    
+    it('valueOf empty set returns null', function(){
+        var c1 = new campaign.CampaignFeatures();
+        expect(c1.valueOf()).toEqual({ attributes : { 'xsi:nil' : true } , $value : '' });
+    });
+});
+
 describe('campaign',function(){
     var flush = true, campaign, mockSUtils, mockClient;
     beforeEach(function(){
@@ -15,7 +190,7 @@ describe('campaign',function(){
         spyOn(mockSUtils,'getList');
         spyOn(mockSUtils,'getObject');
     });
-    
+
     it('uses soaputils makeAdmin to create admin',function(){
         var args, mockKey = {}, mockCert = {};
         campaign.createAdmin(mockKey,mockCert);
@@ -32,7 +207,8 @@ describe('campaign',function(){
             'getCampaignList',
             'getCampaignTypeList',
             'getOptimizerTypeList',
-            'makeDateRangeList'
+            'makeDateRangeList',
+            'makeCampaignFeatures'
         ]);
     });
 
@@ -109,4 +285,50 @@ describe('campaign',function(){
                 mockList
                 );
     });
+
+    it('makeCampaignFeatures',function(){
+        var features = {
+            'f1' : true,
+            'f2' : true,
+            'f3' : false
+        };
+
+        expect(campaign.makeCampaignFeatures(mockClient,features)).toEqual({
+            attributes: {
+              'xmlns:cm'  : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/',
+              'xmlns:xsd' : 'http://www.w3.org/2001/XMLSchema'
+            },
+            Keys: {
+                Item: [
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f1' },
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f2' },
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f3' }
+                ]
+            },
+            Values : {
+                Item: [
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'1'}
+                    },
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'1'}
+                    },
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'0'}
+                    }
+                ]
+            }
+        });
+    });
 });
+
+
