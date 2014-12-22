@@ -70,7 +70,7 @@ describe('banner',function(){
     it('deleteBanner', function(){
         banner.deleteBanner(mockClient,1);
         expect(mockSUtils.deleteObject)
-            .toHaveBeenCalledWith('deleteBanner','bannerId',[mockClient,1]);
+            .toHaveBeenCalledWith('deleteBanner','bannerid',[mockClient,1]);
     });
 
     it('getBannerList', function(){
