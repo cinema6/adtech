@@ -13,6 +13,7 @@ module.exports = {
     bannerAdmin         : null,
     campaignAdmin       : null,
     customerAdmin       : null,
+    keywordAdmin        : null,
     websiteAdmin        : null,
     
     AOVE                : require('./lib/aove'),
@@ -20,6 +21,7 @@ module.exports = {
     createBannerAdmin   : wrap(require('./lib/banner').createAdmin,   'bannerAdmin'),
     createCampaignAdmin : wrap(require('./lib/campaign').createAdmin, 'campaignAdmin'),
     createCustomerAdmin : wrap(require('./lib/customer').createAdmin, 'customerAdmin'),
+    createKeywordAdmin  : wrap(require('./lib/keyword').createAdmin, 'keywordAdmin'),
     createWebsiteAdmin  : wrap(require('./lib/website').createAdmin,  'websiteAdmin'),
 
     createClient : function() {
