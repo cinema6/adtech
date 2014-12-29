@@ -38,6 +38,20 @@ describe('soaputils',function(){
                     }
                 },
                 prop2 : { attributes : { z : 2 }, $value : 2 },
+                hashMap: {
+                    Keys: {
+                        Item: [
+                            { attributes: { 'i:type': 'd:long' }, $value: '12345' },
+                            { attributes: { 'i:type': 'd:string' }, $value: 'foo' }
+                        ]
+                    },
+                    Values: {
+                        Item: [
+                            { attributes: { 'i:type': 'd:string' }, $value: 'porkchops' },
+                            { attributes: { 'i:type': 'd:int' }, $value: '5' }
+                        ]
+                    }
+                },
                 list1 : {
                     Items : {
                         Item : [
@@ -122,6 +136,7 @@ describe('soaputils',function(){
                         { val1 : 1, val2 : 1},
                         { val1 : 2, val2 : 2}
                 ],
+                hashMap: { '12345': 'porkchops', 'foo': 5 },
                 list2 : [ 'apple', 'banana', 'carrot', 'dodo' ],
                 list3 : [ 'alligator', 'bear', 'croc', 'dragon' ],
                 list4 : [ ],
@@ -129,6 +144,11 @@ describe('soaputils',function(){
             });
             expect(isArray(processed.list1)).toEqual(true);
             expect(isArray(processed.list2)).toEqual(true);
+        });
+        
+        it('handles simple responses', function() {
+            var obj = { attributes: { 'i:type': 'd:long' }, $value: 123456 };
+            expect(soapUtils.processResponse(obj)).toBe(123456);
         });
     });
 
@@ -650,6 +670,17 @@ describe('soaputils',function(){
                     expect(mockClient.testMethod).toHaveBeenCalled();
                     expect(optArg.extid).toEqual(2);
                     expect(optArg.id2).toEqual(nil);
+                })
+                .done(done);
+        });
+        
+        it('simply sends the arguments if propName is not defined', function(done) {
+            soapUtils.getObject('testMethod',null, [mockClient, {foo: 'bar'}])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(mockData);
+                    expect(mockClient.testMethod).toHaveBeenCalled();
+                    expect(optArg).toEqual({foo: 'bar'});
                 })
                 .done(done);
         });
