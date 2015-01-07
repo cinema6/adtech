@@ -13,6 +13,15 @@ function getAdGoalList(){
     return adtech.campaignAdmin.getAdGoalTypeList();
 }
 
+function getCampaignStatusValues(){
+    var aove = new adtech.AOVE();
+    aove.addExpression(
+        new adtech.AOVE.StringExpression('name','Fuzzy Wuzzy3')
+    );
+    return adtech.campaignAdmin.getCampaignStatusValues(['6255177','6255627','9999999'],aove);
+    //return adtech.campaignAdmin.getCampaignStatusValues(null,aove);
+};
+
 function getOptimizerList(){
     var aove = new adtech.AOVE();
 
@@ -27,7 +36,7 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return getCampaign();
+    return getCampaignStatusValues();
 }
 
 adtech.createClient()

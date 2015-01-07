@@ -132,17 +132,34 @@ describe('soaputils',function(){
         });
     });
 
+    describe('hashMapify', function(){
+        it('converts a HashMap object into a map',function(){
+            expect(soapUtils.hashMapify({
+                Keys : [ 'key1', 'key2', 'key3'],
+                Values: [ 'val1', 'val2', 'val3']
+            })).toEqual({
+                'key1' : 'val1',
+                'key2' : 'val2',
+                'key3' : 'val3'
+            });
+        });
+
+        it('returns null for an empty hashmap',function(){
+            expect(soapUtils.hashMapify({Keys:null,Values:null})).toBeNull();
+        });
+
+        it('does nothing with a non HashMap object',function(){
+            expect(soapUtils.hashMapify('a')).toEqual('a');
+        });
+    });
+
     describe('makeTypedList', function(){
-        var rawList;
-        beforeEach(function(){
-            rawList = [
+        it('handles complex types',function(){
+            var rawList = [
                 { name : 'obj1', val  : 1 },
                 { name : 'obj2', val  : 2 },
                 { name : 'obj3', val  : 3 }
             ];
-        });
-
-        it('uses namespace and typename params',function(){
             expect(soapUtils.makeTypedList('abc','TestType',rawList)).toEqual(
                 {
                     Items : { 
@@ -151,6 +168,51 @@ describe('soaputils',function(){
                             {attributes:{'xsi:type':'cm:TestType'},name:'obj1',val:1},
                             {attributes:{'xsi:type':'cm:TestType'},name:'obj2',val:2},
                             {attributes:{'xsi:type':'cm:TestType'},name:'obj3',val:3}
+                        ]
+                    }
+                }
+            );
+        });
+        
+        it('handles simple type: string',function(){
+            expect(soapUtils.makeTypedList('abc','string',['abc','def','ghi'])).toEqual(
+                {
+                    Items : { 
+                        attributes : { 'xmlns:cm' : 'abc' },
+                        Item : [
+                            {attributes:{'xsi:type':'cm:string'},$value:'abc'},
+                            {attributes:{'xsi:type':'cm:string'},$value:'def'},
+                            {attributes:{'xsi:type':'cm:string'},$value:'ghi'}
+                        ]
+                    }
+                }
+            );
+        });
+        
+        it('handles simple type: long',function(){
+            expect(soapUtils.makeTypedList('abc','long',[1,2,3])).toEqual(
+                {
+                    Items : { 
+                        attributes : { 'xmlns:cm' : 'abc' },
+                        Item : [
+                            {attributes:{'xsi:type':'cm:long'},$value:1},
+                            {attributes:{'xsi:type':'cm:long'},$value:2},
+                            {attributes:{'xsi:type':'cm:long'},$value:3}
+                        ]
+                    }
+                }
+            );
+        });
+        
+        it('handles simple type: int',function(){
+            expect(soapUtils.makeTypedList('abc','int',[1,2,3])).toEqual(
+                {
+                    Items : { 
+                        attributes : { 'xmlns:cm' : 'abc' },
+                        Item : [
+                            {attributes:{'xsi:type':'cm:int'},$value:1},
+                            {attributes:{'xsi:type':'cm:int'},$value:2},
+                            {attributes:{'xsi:type':'cm:int'},$value:3}
                         ]
                     }
                 }

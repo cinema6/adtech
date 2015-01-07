@@ -174,11 +174,13 @@ describe('CampaignFeatures',function(){
 });
 
 describe('campaign',function(){
-    var flush = true, campaign, mockSUtils, mockClient;
+    var flush = true, campaign, mockSUtils, mockClient, resolveSpy, rejectSpy;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
         campaign     = require('../../lib/campaign');
         mockSUtils   = require('../../lib/soaputils');
+        resolveSpy   = jasmine.createSpy('resolve');
+        rejectSpy    = jasmine.createSpy('reject');
         
         mockClient = { };
 
@@ -205,6 +207,7 @@ describe('campaign',function(){
             'getCampaignByExtId',
             'getCampaignById',
             'getCampaignList',
+            'getCampaignStatusValues',
             'getCampaignTypeList',
             'getOptimizerTypeList',
             'makeDateRangeList',
@@ -267,6 +270,29 @@ describe('campaign',function(){
         expect(mockSUtils.getList)
             .toHaveBeenCalledWith('getCampaignTypeList','CampaignType','order',[mockClient]);
     
+    });
+
+    it('getCampaignStatusValues', function(done){
+        mockClient.getCampaignStatusValues = jasmine.createSpy('getCampaignStatusValues');
+        mockClient.getCampaignStatusValues.andCallFake(function(a,b){
+            return b(null,{});
+        });
+
+        campaign.getCampaignStatusValues(mockClient,['123','456'])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(rejectSpy).not.toHaveBeenCalled(); 
+                    expect(mockSUtils.makeTypedList)
+                        .toHaveBeenCalledWith(
+                            'http://www.w3.org/2001/XMLSchema',
+                            'string',
+                            ['123','456']
+                            );
+
+                    expect(mockClient.getCampaignStatusValues).toHaveBeenCalled();
+                })
+                .done(done);
     });
 
     it('getOptimizerTypeList', function(){
