@@ -22,6 +22,27 @@ function getCampaignStatusValues(){
     //return adtech.campaignAdmin.getCampaignStatusValues(null,aove);
 };
 
+function holdCampaign() {
+    return adtech.pushAdmin.holdCampaignById('6255177');
+};
+
+function startCampaign() {
+    return adtech.pushAdmin.startCampaignById('6314771');
+};
+
+function stopCampaign() {
+    return adtech.pushAdmin.stopCampaignById('6255177');
+};
+
+function deleteCampaign() {
+    return adtech.campaignAdmin.deleteCampaign('6255177');
+};
+
+
+function updateCampaignStatusValues() {
+    return adtech.campaignAdmin.updateCampaignStatusValues({'6255177':14});
+};
+
 function getOptimizerList(){
     var aove = new adtech.AOVE();
 
@@ -36,7 +57,7 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return getCampaignStatusValues();
+    return startCampaign();
 }
 
 adtech.createClient()
@@ -45,6 +66,6 @@ adtech.createClient()
     console.log(JSON.stringify(result,null,3));
 })
 .catch(function(err){
-    console.log('Error:',err);
+    console.log('Error:',err.message);
     process.exit(1);
 });

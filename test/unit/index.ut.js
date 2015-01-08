@@ -1,5 +1,5 @@
 describe('index',function(){
-    var once = true, index, banner, campaign, customer, website,
+    var once = true, index, banner, campaign, customer, push, website,
         admin, q, resolveSpy, rejectSpy;
     beforeEach(function(){
         if (once) { 
@@ -7,6 +7,7 @@ describe('index',function(){
             banner      = require('../../lib/banner');
             campaign    = require('../../lib/campaign');
             customer    = require('../../lib/customer');
+            push        = require('../../lib/push');
             website     = require('../../lib/website');
             constants   = require('../../lib/constants');
             q           = require('q');
@@ -14,6 +15,7 @@ describe('index',function(){
             spyOn(banner,'createAdmin').andReturn(q(admin));
             spyOn(campaign,'createAdmin').andReturn(q(admin));
             spyOn(customer,'createAdmin').andReturn(q(admin));
+            spyOn(push,'createAdmin').andReturn(q(admin));
             spyOn(website,'createAdmin').andReturn(q(admin));
             index   = require('../../index.js');
         }
@@ -55,6 +57,18 @@ describe('index',function(){
             .done(done);
         });
         
+        it('createPushAdmin is proxied',function(done){
+            index.createPushAdmin()
+            .then(resolveSpy,rejectSpy)
+            .then(function(){
+                expect(resolveSpy).toHaveBeenCalled();
+                expect(push.createAdmin).toHaveBeenCalled();
+                expect(index.pushAdmin).toBe(admin);
+            })
+            .done(done);
+        });
+        
+        
         it('createWebsiteAdmin is proxied',function(done){
             index.createWebsiteAdmin()
             .then(resolveSpy,rejectSpy)
@@ -76,10 +90,12 @@ describe('index',function(){
                 expect(banner.createAdmin).toHaveBeenCalled();
                 expect(campaign.createAdmin).toHaveBeenCalled();
                 expect(customer.createAdmin).toHaveBeenCalled();
+                expect(push.createAdmin).toHaveBeenCalled();
                 expect(website.createAdmin).toHaveBeenCalled();
                 expect(index.bannerAdmin).toBe(admin);
                 expect(index.campaignAdmin).toBe(admin);
                 expect(index.customerAdmin).toBe(admin);
+                expect(index.pushAdmin).toBe(admin);
                 expect(index.websiteAdmin).toBe(admin);
             })
             .done(done);

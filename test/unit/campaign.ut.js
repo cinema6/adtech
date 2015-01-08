@@ -211,7 +211,9 @@ describe('campaign',function(){
             'getCampaignTypeList',
             'getOptimizerTypeList',
             'makeDateRangeList',
-            'makeCampaignFeatures'
+            'makeCampaignFeatures',
+            'makePlacementIdList',
+            'updateCampaignStatusValues',
         ]);
     });
 
@@ -281,7 +283,7 @@ describe('campaign',function(){
         campaign.getCampaignStatusValues(mockClient,['123','456'])
                 .then(resolveSpy,rejectSpy)
                 .then(function(){
-                    expect(resolveSpy).toHaveBeenCalledWith([]);
+                    expect(resolveSpy).toHaveBeenCalledWith(null);
                     expect(rejectSpy).not.toHaveBeenCalled(); 
                     expect(mockSUtils.makeTypedList)
                         .toHaveBeenCalledWith(

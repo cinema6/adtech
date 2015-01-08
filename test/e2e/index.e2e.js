@@ -17,6 +17,7 @@ describe('adtech.index',function(){
         testRun      = 'c6-e2e-' + helpers.uuid() + '-';
         testData     = new helpers.TestData(testRun);
         testData.createRecord('Adv1');
+        testData.createRecord('Bann1');
         testData.createRecord('Cust1');
         testData.createRecord('Site1');
         testData.createRecord('Page1');
@@ -208,6 +209,7 @@ describe('adtech.index',function(){
         var custRec = testData.getRecord('Cust1'),
             advRec  = testData.getRecord('Adv1'),
             campRec = testData.getRecord('Camp1'),
+            plcRec  = testData.getRecord('Plc1'),
             adGoalTypeRec = testData.getRecord('adGoalType'),
             cmpTypeRec = testData.getRecord('campaignType'),
             optTypeRec = testData.getRecord('optimizerType'),
@@ -237,6 +239,7 @@ describe('adtech.index',function(){
                     minClickRate: 0,
                     minNoPlacements: 0
                 },
+                placementIdList : adtech.campaignAdmin.makePlacementIdList([plcRec.id]),
                 pricingConfig :  {
                     cpm: 0
                 }
@@ -251,6 +254,59 @@ describe('adtech.index',function(){
             expect(result.extId).toEqual(campaign.extId);
             testData.set('Camp1',result.id,result);
         })
+        .done(done,done);
+    });
+
+    it('creates Bann1', function(done){
+        var campRec = testData.getRecord('Camp1'),
+            bannRec = testData.getRecord('Bann1'),
+            IBanner = adtech.constants.IBanner,
+            IFrequencyInformation = adtech.constants.IFrequencyInformation,
+            scriptTag = new Buffer("<script type=\"text/javascript\">window.c6.addReel('_ADBNEXTID_','_ADCUID_','_ADCLICK_','_ADADID_' );</script>");
+
+        var banner = {
+            data            : scriptTag.toString('base64'),
+            description     : '',
+            extId           : bannRec.extId,
+            fileType        : 'html',
+            id              : -1,
+            mainFileName    : 'index.html',
+            name            : bannRec.uname,
+            originalData    : scriptTag.toString('base64'),
+            sizeTypeId      : 16,
+            statusId        : IBanner.STATUS_ACTIVE,
+            styleTypeId     : IBanner.STYLE_HTML
+        };
+
+        var bannerInfo = {
+            bannerReferenceId       : banner.id,
+            entityFrequencyConfig   : {
+                frequencyCookiesOnly : true,
+                frequencyDistributed : true,
+                frequencyInterval    : 30,
+                frequencyTypeId      : IFrequencyInformation.FREQUENCY_5_MINUTES
+            },
+            name                    : banner.name,
+            statusId                : banner.statusId
+        };
+
+        adtech.bannerAdmin.createBanner(campRec.id,banner,bannerInfo)
+        .then(resolveSpy,rejectSpy)
+//        .then(expectFailure)
+        .then(function(){
+            var result = resolveSpy.arg();
+            expect(result.name).toEqual(banner.name);
+            expect(result.extId).toEqual(banner.extId);
+            testData.set('Bann1',result.id,result);
+        })
+        .done(done,done);
+    });
+
+    it('starts Camp1',function(done){
+        var campRec = testData.getRecord('Camp1');
+        adtech.pushAdmin.startCampaignById(campRec.id)
+        .then(resolveSpy,rejectSpy)
+        .then(expectFailure)
         .done(done,done);
     });
     

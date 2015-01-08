@@ -220,6 +220,33 @@ describe('soaputils',function(){
         });
     });
 
+    describe('makeSimpleTypedMap', function(){
+
+        it('creates an api formatted map',function(){
+            expect(soapUtils.makeSimpleTypedMap('string','string',{
+                'apple' : 'orange',
+                'banana' : 'yellow',
+                'melon'  : 'green'
+            })).toEqual({
+                attributes :  { 'xmlns:xsd' : 'http://www.w3.org/2001/XMLSchema' },
+                Keys : {
+                    Item : [
+                        { attributes:{'xsi:type':'xsd:string'},$value:'apple' },
+                        { attributes:{'xsi:type':'xsd:string'},$value:'banana' },
+                        { attributes:{'xsi:type':'xsd:string'},$value:'melon' }
+                    ]
+                },
+                Values : {
+                    Item : [
+                        { attributes:{'xsi:type':'xsd:string'},$value:'orange' },
+                        { attributes:{'xsi:type':'xsd:string'},$value:'yellow' },
+                        { attributes:{'xsi:type':'xsd:string'},$value:'green' }
+                    ]
+                }
+            });
+        });
+    });
+
     describe('createSoapSSLClient',function(){
         var mockClient, mockFs, mockSoap;
         beforeEach(function(){
@@ -481,7 +508,6 @@ describe('soaputils',function(){
         });
     });
 
-
     describe('deleteObject',function(){
         var mockClient, nil, optArg;
         beforeEach(function(){
@@ -522,6 +548,54 @@ describe('soaputils',function(){
             });
 
             soapUtils.deleteObject('deleteMethod','id',[mockClient,1])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(rejectSpy).toHaveBeenCalledWith(e);
+                })
+                .done(done);
+        });
+    });
+    
+    describe('exec',function(){
+        var mockClient, nil, optArg;
+        beforeEach(function(){
+            nil = soapUtils.nil;
+
+            optArg = null;
+
+            mockClient = {
+                testMethod : jasmine.createSpy('testMethod')
+            };
+
+            mockClient.testMethod.andCallFake(function(opts,cb){
+                optArg = opts;
+                process.nextTick(function(){
+                    cb(null,[{ }, '']);
+                });
+            });
+            
+        });
+        
+        it('returns true if the method returns nothing',function(done){
+            soapUtils.exec('testMethod','id',[mockClient,1])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(true);
+                    expect(mockClient.testMethod.calls[0].args[0])
+                        .toEqual({id:1});
+                })
+                .done(done);
+        });
+
+        it('rejects if the method fails', function(done){
+            var e = new Error('error');
+            mockClient.testMethod.andCallFake(function(opts,cb){
+                process.nextTick(function(){
+                    cb(e);
+                });
+            });
+
+            soapUtils.exec('testMethod','id',[mockClient,1])
                 .then(resolveSpy,rejectSpy)
                 .then(function(){
                     expect(rejectSpy).toHaveBeenCalledWith(e);
