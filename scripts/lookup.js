@@ -13,6 +13,10 @@ function getAdGoalList(){
     return adtech.campaignAdmin.getAdGoalTypeList();
 }
 
+function getCampaignStatus() {
+    return adtech.campaignAdmin.getCampaignStatusValues(['6314423']);
+}
+
 function getCampaignStatusValues(){
     var aove = new adtech.AOVE();
     aove.addExpression(
@@ -40,8 +44,22 @@ function deleteCampaign() {
 
 
 function updateCampaignStatusValues() {
-    return adtech.campaignAdmin.updateCampaignStatusValues({'6255177':14});
+    return adtech.campaignAdmin.updateCampaignStatusValues({'6262256':2});
 };
+
+function updateDesiredImpressions() {
+    return adtech.campaignAdmin.updateCampaignDesiredImpressions({'6262256':250455});
+}
+
+function updateCampaign() {
+    return adtech.campaignAdmin.getCampaignById(6262256)
+        .then(function(campaign){
+            return campaign;
+            console.log('CAMPAIGN:',JSON.stringify(campaign,null,3));
+            campaign.placementIdList = adtech.campaignAdmin.makePlacementIdList([3437144]);
+            return adtech.campaignAdmin.updateCampaign(campaign);
+        });
+}
 
 function getOptimizerList(){
     var aove = new adtech.AOVE();
@@ -57,7 +75,7 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return startCampaign();
+    return updateCampaign();
 }
 
 adtech.createClient()
@@ -66,6 +84,6 @@ adtech.createClient()
     console.log(JSON.stringify(result,null,3));
 })
 .catch(function(err){
-    console.log('Error:',err.message);
+    console.log('Error:',err.stack);
     process.exit(1);
 });

@@ -112,6 +112,47 @@ describe('soaputils',function(){
                     "attributes" : { "i:type" : "d:Vector" },
                     "Items" : {}
                 },
+                map1 : {
+                     "attributes": { "i:type": "wn7:HashMap" },
+                     "Keys": { "Item": [
+                            { "attributes": { "i:type": "d:string" }, "$value": "ecpm" },
+                            { "attributes": { "i:type": "d:string" }, "$value": "targeting" },
+                            { "attributes": { "i:type": "d:string" }, "$value": "keywords" }
+                      ]},
+                     "Values": { "Item": [
+                            { "attributes": { "i:type": "d:string" }, "$value": "ecpm" },
+                            { "attributes": { "i:type": "d:string" }, "$value": "targeting" },
+                            { "attributes": { "i:type": "d:string" }, "$value": "keywords" }
+                     ]}
+                },
+                map2 : {
+                     "attributes": { "i:type": "wn7:HashMap" },
+                     "Keys": { "Item": [
+                            { "attributes": { "i:type": "d:string" }, "$value": "ecpm" },
+                            { "attributes": { "i:type": "d:string" }, "$value": "targeting" },
+                            { "attributes": { "i:type": "d:string" }, "$value": "keywords" }
+                      ]},
+                     "Values": { "Item": [
+                        { 
+                        "attributes":{"i:type":"wn9:CampaignFeatureSettings"},
+                        "locked":{"attributes":{"i:type":"d:boolean"},"$value":"0"},
+                        "shared":{"attributes":{"i:type":"d:boolean"},"$value":"0"},
+                        "visible":{"attributes":{"i:type":"d:boolean"},"$value":"0"}
+                        },
+                        {
+                        "attributes":{"i:type":"wn9:CampaignFeatureSettings"},
+                        "locked":{"attributes":{"i:type":"d:boolean"},"$value":"0"},
+                        "shared":{"attributes":{"i:type":"d:boolean"},"$value":"0"},
+                        "visible":{"attributes":{"i:type":"d:boolean"},"$value":"1"}
+                        },
+                        {
+                        "attributes":{"i:type":"wn9:CampaignFeatureSettings"},
+                        "locked":{"attributes":{"i:type":"d:boolean"},"$value":"0"},
+                        "shared":{"attributes":{"i:type":"d:boolean"},"$value":"0"},
+                        "visible":{"attributes":{"i:type":"d:boolean"},"$value":"0"}
+                       },
+                    ]}
+                },
                 emptyVal : { "attributes" : { "i:type" : "d:string" } }
             };
             var processed = soapUtils.processResponse(obj);
@@ -125,7 +166,13 @@ describe('soaputils',function(){
                 list2 : [ 'apple', 'banana', 'carrot', 'dodo' ],
                 list3 : [ 'alligator', 'bear', 'croc', 'dragon' ],
                 list4 : [ ],
-                emptyVal : null
+                map1 : { ecpm : 'ecpm', targeting : 'targeting', keywords : 'keywords' },
+                map2 : { 
+                         ecpm :     { locked:false,shared:false,visible:false},
+                         targeting: { locked:false,shared:false,visible:true},
+                         keywords:  { locked:false,shared:false,visible:false}
+                },
+                emptyVal : ''
             });
             expect(isArray(processed.list1)).toEqual(true);
             expect(isArray(processed.list2)).toEqual(true);

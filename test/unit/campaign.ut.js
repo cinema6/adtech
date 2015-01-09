@@ -213,7 +213,9 @@ describe('campaign',function(){
             'makeDateRangeList',
             'makeCampaignFeatures',
             'makePlacementIdList',
-            'updateCampaignStatusValues',
+            'updateCampaign',
+            'updateCampaignDesiredImpressions',
+            'updateCampaignStatusValues'
         ]);
     });
 
