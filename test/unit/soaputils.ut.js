@@ -200,6 +200,141 @@ describe('soaputils',function(){
         });
     });
 
+    describe('copyProp',function(){
+        var testObj, dstObj;
+        beforeEach(function(){
+            testObj = {
+                prop_num1 : 1,
+                prop_str1 : 'string',
+                prop_dt1  : new Date(1421070000000),
+                prop_bool1 : true,
+                prop_bool2 : false,
+                subA : {
+                    subA1 : {
+                        subA1Val1 : 2,
+                        subA1Val2 : new Date(1421070000000)
+                    },
+                    subA2 : 3
+                }
+            };
+            dstObj = {};
+        });
+
+        it('copies the property if it exists',function(){
+            soapUtils.copyProp(testObj,dstObj,'prop_num1');
+            expect(dstObj.prop_num1).toEqual(1);
+        });
+
+        it('ignores the property if it does not exist',function(){
+            dstObj = { foo : 'bar' };
+            soapUtils.copyProp(testObj,dstObj,'prop_num2');
+            expect(dstObj).toEqual({ foo: 'bar' });
+        });
+
+        it('sets the property with default if it does not exist',function(){
+            dstObj = { foo : 'bar' };
+            soapUtils.copyProp(testObj,dstObj,'prop_num2',44);
+            expect(dstObj).toEqual({ foo: 'bar', prop_num2 : 44 });
+        });
+
+        it('converts a date prop to string', function(){
+            soapUtils.copyProp(testObj,dstObj,'prop_dt1');
+            expect(dstObj.prop_dt1).toEqual('2015-01-12T13:40:00.000Z');
+        });
+
+        it('converts a boolean prop to number', function(){
+            soapUtils.copyProp(testObj,dstObj,'prop_bool1');
+            soapUtils.copyProp(testObj,dstObj,'prop_bool2');
+            soapUtils.copyProp(testObj,dstObj,'prop_bool3');
+            expect(dstObj).toEqual({
+                prop_bool1 : 1,
+                prop_bool2 : 0
+            });
+        });
+
+        it('copies sub prop to empty obj',function(){
+            dstObj = {};
+            soapUtils.copyProp(testObj,dstObj,'subA.subA1.subA1Val1');
+            expect(dstObj).toEqual({ subA : { subA1 : { subA1Val1 : 2 } } });
+        });
+        
+        it('copies sub prop to obj with prop',function(){
+            dstObj = { subA : { subA2 : 5 } };
+            soapUtils.copyProp(testObj,dstObj,'subA.subA1.subA1Val1');
+            expect(dstObj).toEqual({ subA : { subA1 : { subA1Val1 : 2 }, subA2 : 5 } });
+        });
+
+        it('does nothing to dest if source not there and no default',function(){
+            dstObj = { subA : { subA2 : 5 } };
+            soapUtils.copyProp(testObj,dstObj,'subA.subA1.subA1Val9');
+            expect(dstObj).toEqual({ subA : { subA2 : 5 } });
+        });
+    });
+   
+    describe('isAPIObject',function(){
+        it('returns true if has attribute property',function(){
+            expect(soapUtils.isAPIObject({ attributes : { x : 1} })).toEqual(true);
+        });
+        
+        it('returns true if has $value property',function(){
+            expect(soapUtils.isAPIObject({  $value : 1 })).toEqual(true);
+        });
+        
+        it('returns false if has no attributes or $value property',function(){
+            expect(soapUtils.isAPIObject({  value : 1 })).toEqual(false);
+        });
+        
+        it('returns false if passed undefined',function(){
+            expect(soapUtils.isAPIObject()).toEqual(false);
+        });
+        
+        it('returns false if passed null',function(){
+            expect(soapUtils.isAPIObject(null)).toEqual(false);
+        });
+        
+        it('returns false if passed string',function(){
+            expect(soapUtils.isAPIObject('abc')).toEqual(false);
+        });
+        
+        it('returns false if passed number',function(){
+            expect(soapUtils.isAPIObject(1)).toEqual(false);
+        });
+    });
+
+    describe('makePropCopier',function(){
+        var testObj, dstObj, copier;
+        beforeEach(function(){
+            testObj = {
+                prop_num1 : 1,
+                prop_str1 : 'string',
+                prop_dt1  : new Date(1421070000000),
+                prop_bool1 : true,
+                prop_bool2 : false
+            };
+            dstObj = {};
+            copier = soapUtils.makePropCopier(testObj,dstObj);
+            spyOn(soapUtils,'copyProp');
+        });
+
+        it('makes a property copier',function(){
+            expect(copier.source).toBe(testObj);
+            expect(copier.dest).toBe(dstObj);
+        });
+
+        it('copy wraps the propCopy method',function(){
+            copier.copy('prop_num1');
+            expect(soapUtils.copyProp)
+                .toHaveBeenCalledWith(testObj,dstObj,'prop_num1',undefined);
+        });
+
+        it('copy wraps the propCopy method passing nil as default',function(){
+            copier.copyNil('prop_num1');
+            expect(soapUtils.copyProp)
+                .toHaveBeenCalledWith(testObj,dstObj,'prop_num1',soapUtils.nil);
+        });
+
+    });
+
     describe('makeTypedList', function(){
         it('handles complex types',function(){
             var rawList = [

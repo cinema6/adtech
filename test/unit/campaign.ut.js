@@ -173,6 +173,540 @@ describe('CampaignFeatures',function(){
     });
 });
 
+ddescribe('objectTo__',function(){
+    var campaign, bannerInfoObject, bannerInfoObjectList, bannerTimeRangeObject,
+        timeRangeObject;
+    beforeEach(function(){
+        campaign     = require('../../lib/campaign');
+        bannerInfoObject = {
+            assetTypeId: 0,
+            bannerNumber: 1,
+            bannerReferenceId: 24030672,
+            campaignId: 6262256,
+            campaignVersion: 5,
+            description: '',
+            entityFrequencyConfig: {
+               frequencyCookiesOnly: true,
+               frequencyDistributed: false,
+               frequencyInterval: 0,
+               frequencyTypeId: -1,
+               uniqueFrequencyId: 115920876
+            },
+            extId: "",
+            id: 431070639,
+            isVersion: false,
+            mainNetwork: 5491,
+            mediaTypeId: 0,
+            name: 'une banner',
+            sequenceNo: 1,
+            sizeTypeId: -1,
+            statusId: 1,
+            styleTypeId: -1,
+            subNetwork: 1,
+            weight: 50
+        };
+        bannerInfoObjectList = {
+            Items : {
+                attributes : {
+                    'xmlns:bi' : 'http://systinet.com/wsdl/de/adtech/helios/BannerManagement/'
+                },
+                Item : [
+                    {
+                        attributes : {
+                            'xsi:type' : 'bi:BannerInfo'
+                        },
+                        assetTypeId: 0,
+                        bannerNumber: 1,
+                        bannerReferenceId: 24030672,
+                        campaignId: 6262256,
+                        campaignVersion: 5,
+                        description: '',
+                        entityFrequencyConfig: {
+                           frequencyCookiesOnly: 1,
+                           frequencyDistributed: 0,
+                           frequencyInterval: 0,
+                           frequencyTypeId: -1,
+                           uniqueFrequencyId: 115920876
+                        },
+                        extId: "",
+                        id: 431070639,
+                        isVersion: 0,
+                        mainNetwork: 5491,
+                        mediaTypeId: 0,
+                        name: 'une banner',
+                        sequenceNo: 1,
+                        sizeTypeId: -1,
+                        statusId: 1,
+                        styleTypeId: -1,
+                        subNetwork: 1,
+                        weight: 50
+                    }
+                ]
+            }
+        };
+        bannerTimeRangeObject = {
+            bannerDeliveryTypeId: 1,
+            bannerInfoList: [ bannerInfoObject ],
+            campaignVersion: 3,
+            comment: "",
+            creativeList: [],
+            description: "",
+            endDate :new Date(1421070000000),
+            extId: "",
+            hasValidationError: false,
+            id: 109367675,
+            isVersion: false,
+            mainNetwork: 5491,
+            name: "",
+            startDate :new Date(1421070000000),
+            subNetwork: 1,
+            todo: false
+        };
+
+        timeRangeObject = {
+            deleted: false,
+            endHour: 23,
+            endMinute: 59,
+            id: 0,
+            pos: 0,
+            startHour: 0,
+            startMinute: 0
+        };
+    });
+
+    it('BannerInfo',function(){
+        expect(campaign.objectToBannerInfo(bannerInfoObject)).toEqual({
+            assetTypeId: 0,
+            bannerNumber: 1,
+            bannerReferenceId: 24030672,
+            campaignId: 6262256,
+            campaignVersion: 5,
+            description: '',
+            entityFrequencyConfig: {
+               frequencyCookiesOnly: 1,
+               frequencyDistributed: 0,
+               frequencyInterval: 0,
+               frequencyTypeId: -1,
+               uniqueFrequencyId: 115920876
+            },
+            extId: "",
+            id: 431070639,
+            isVersion: 0,
+            mainNetwork: 5491,
+            mediaTypeId: 0,
+            name: 'une banner',
+            sequenceNo: 1,
+            sizeTypeId: -1,
+            statusId: 1,
+            styleTypeId: -1,
+            subNetwork: 1,
+            weight: 50
+        });
+    });
+
+    it('BannerInfoList',function(){
+        expect(campaign.objectToBannerInfoList([bannerInfoObject]))
+            .toEqual(bannerInfoObjectList);
+    });
+    
+    it('BannerTimeRange',function(){
+        expect(campaign.objectToBannerTimeRange(bannerTimeRangeObject)).toEqual({
+            bannerDeliveryTypeId: 1,
+            bannerInfoList: bannerInfoObjectList,
+            campaignVersion: 3,
+            comment: "",
+            creativeList: [],
+            description: "",
+            endDate: '2015-01-12T13:40:00.000Z',
+            extId: "",
+            hasValidationError: 0,
+            id: 109367675,
+            isVersion: 0,
+            mainNetwork: 5491,
+            name: "",
+            startDate: '2015-01-12T13:40:00.000Z',
+            subNetwork: 1,
+            todo: 0
+        });
+    });
+
+    it('BannerTimeRangeList',function(){
+        expect(campaign.objectToBannerTimeRangeList([bannerTimeRangeObject])).toEqual({
+            Items : {
+                attributes : {
+                   'xmlns:bt' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
+                },
+                Item : [
+                    {
+                        attributes : {
+                            'xsi:type' : 'bt:BannerTimeRange'
+                        },
+                        bannerDeliveryTypeId: 1,
+                        bannerInfoList: bannerInfoObjectList,
+                        campaignVersion: 3,
+                        comment: "",
+                        creativeList: [],
+                        description: "",
+                        endDate: '2015-01-12T13:40:00.000Z',
+                        extId: "",
+                        hasValidationError: 0,
+                        id: 109367675,
+                        isVersion: 0,
+                        mainNetwork: 5491,
+                        name: "",
+                        startDate: '2015-01-12T13:40:00.000Z',
+                        subNetwork: 1,
+                        todo: 0
+                    }
+                ]
+            }
+        });
+    });
+
+    it('CampaignFeatures',function(){
+        var features = {
+            'f1' : true,
+            'f2' : true,
+            'f3' : false
+        };
+
+        expect(campaign.objectToCampaignFeatures(features)).toEqual({
+            attributes: {
+              'xmlns:cm'  : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/',
+              'xmlns:xsd' : 'http://www.w3.org/2001/XMLSchema'
+            },
+            Keys: {
+                Item: [
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f1' },
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f2' },
+                    { attributes: { 'xsi:type': 'xsd:string' }, $value: 'f3' }
+                ]
+            },
+            Values : {
+                Item: [
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'1'}
+                    },
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'1'}
+                    },
+                    {
+                       attributes: { 'xsi:type': 'cm:CampaignFeatureSettings' },
+                       locked:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       shared:  {attributes:{'xsi:type':'xsd:boolean'},$value:'0'},
+                       visible: {attributes:{'xsi:type':'xsd:boolean'},$value:'0'}
+                    }
+                ]
+            }
+        });
+    });
+
+    it('TimeRange', function(){
+        expect(campaign.objectToTimeRange(timeRangeObject)).toEqual({
+            deleted: 0,
+            endHour: 23,
+            endMinute: 59,
+            id: 0,
+            pos: 0,
+            startHour: 0,
+            startMinute: 0
+        });
+    });
+    
+    it('TimeRangeList', function(){
+        expect(campaign.objectToTimeRangeList([timeRangeObject])).toEqual({
+            Items : {
+                attributes : {
+                    'xmlns:tr' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
+                },
+                Item : [
+                    {
+                        attributes : {
+                            'xsi:type' : 'tr:TimeRange'
+                        },
+                        deleted: 0,
+                        endHour: 23,
+                        endMinute: 59,
+                        id: 0,
+                        pos: 0,
+                        startHour: 0,
+                        startMinute: 0
+                    }
+                ]
+            }
+        });
+    });
+
+    it('Weekdays',function(){
+        expect(campaign.objectToWeekdays( {
+            daysOfWeek: {
+               boolean: [ "1", "1", "1", "1", "1", "1", "1" ]
+            },
+            deleted: false,
+            id: -1,
+            pos: -1,
+            timeRanges: [
+               {
+                  "deleted": false,
+                  "endHour": 23,
+                  "endMinute": 59,
+                  "id": 0,
+                  "pos": 0,
+                  "startHour": 0,
+                  "startMinute": 0
+               }
+            ]
+        })).toEqual({
+            daysOfWeek : { 
+                boolean : [ 
+                    { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                    { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                    { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                    { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                    { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 }, 
+                    { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 }, 
+                    { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 }
+                ]
+            },
+            deleted : 0,
+            id : -1,
+            pos : -1,
+            timeRanges : { 
+                Items : { 
+                    attributes : {
+                        'xmlns:tr' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/' 
+                    },
+                    Item : [ 
+                        {
+                            attributes : { 'xsi:type' : 'tr:TimeRange' },
+                            deleted : 0,
+                            endHour : 23,
+                            endMinute : 59,
+                            id : 0,
+                            pos : 0,
+                            startHour : 0,
+                            startMinute : 0 
+                        } 
+                    ] 
+                } 
+            }  
+        });
+    });
+
+    it('WeekdaysList',function(){
+        expect(campaign.objectToWeekdaysList( [{
+            daysOfWeek: {
+               boolean: [ "1", "1", "1", "1", "1", "1", "1" ]
+            },
+            deleted: false,
+            id: -1,
+            pos: -1,
+            timeRanges: [
+               {
+                  "deleted": false,
+                  "endHour": 23,
+                  "endMinute": 59,
+                  "id": 0,
+                  "pos": 0,
+                  "startHour": 0,
+                  "startMinute": 0
+               }
+            ]
+        }])).toEqual({
+            Items : {
+                attributes : {
+                    'xmlns:wd' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
+                },
+                Item : [
+                {
+                    attributes : {
+                        'xsi:type' : 'wd:Weekdays'
+                    },
+                    daysOfWeek : { 
+                        boolean : [ 
+                            { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                            { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                            { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                            { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 },
+                            { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 }, 
+                            { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 }, 
+                            { attributes : { 'i:type' : 'xsd:boolean' }, $value : 1 }
+                        ]
+                    },
+                    deleted : 0,
+                    id : -1,
+                    pos : -1,
+                    timeRanges : { 
+                        Items : { 
+                            attributes : {
+                                'xmlns:tr' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/' 
+                            },
+                            Item : [ 
+                                {
+                                    attributes : { 'xsi:type' : 'tr:TimeRange' },
+                                    deleted : 0,
+                                    endHour : 23,
+                                    endMinute : 59,
+                                    id : 0,
+                                    pos : 0,
+                                    startHour : 0,
+                                    startMinute : 0 
+                                } 
+                            ] 
+                        } 
+                    }  
+                }
+            ]
+         }
+        });
+    });
+});
+
+describe('objectToCampaign',function(){
+    var campaign;
+    beforeEach(function(){
+        campaign     = require('../../lib/campaign');
+    });
+
+    it('handles dates on root campaign',function(){
+        var dt = new Date(1421070000000);
+
+        expect(campaign.objectToCampaign({
+            absoluteEndDate: dt,
+            absoluteStartDate: dt
+        })).toEqual(jasmine.objectContaining({
+            absoluteEndDate: '2015-01-12T13:40:00.000Z',
+            absoluteStartDate:'2015-01-12T13:40:00.000Z' 
+        }));
+    });
+
+    xit('handles banner time range', function(){
+        var dt = new Date(1421070000000);
+        expect(campaign.prepareCampaign({
+            bannerTimeRangeList: [
+                {
+                 bannerDeliveryTypeId: 1,
+                 bannerInfoList: [
+                    {
+                       assetTypeId: 0,
+                       bannerNumber: 1,
+                       bannerReferenceId: 24030672,
+                       campaignId: 6262256,
+                       campaignVersion: 5,
+                       description: '',
+                       entityFrequencyConfig: {
+                          frequencyCookiesOnly: true,
+                          frequencyDistributed: false,
+                          frequencyInterval: 0,
+                          frequencyTypeId: -1,
+                          uniqueFrequencyId: 115920876
+                       },
+                       extId: "",
+                       id: 431070639,
+                       isVersion: false,
+                       mainNetwork: 5491,
+                       mediaTypeId: 0,
+                       name: 'une banner',
+                       sequenceNo: 1,
+                       sizeTypeId: -1,
+                       statusId: 1,
+                       styleTypeId: -1,
+                       subNetwork: 1,
+                       weight: 50
+                    }
+                 ],
+                 campaignVersion: 3,
+                 comment: '',
+                 creativeList: [],
+                 description: '',
+                 endDate: dt,
+                 extId: '',
+                 hasValidationError: false,
+                 id: 109367675,
+                 isVersion: false,
+                 mainNetwork: 5491,
+                 name: '',
+                 startDate: dt,
+                 subNetwork: 1,
+                 todo: false
+              } 
+            ]
+        })).toEqual(
+            jasmine.objectContaining({
+                bannerTimeRangeList : {
+                    Items : {
+                        attributes : { 
+                            "xmlns:bt" : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'    },
+                        Item : [
+                            {
+                                attributes : { "xsi:type" : 'bt:BannerTimeRange' },
+                                bannerDeliveryTypeId : 1,
+                                bannerInfoList : {
+                                    Items : {
+                                        attributes : {
+                                            "xmlsns:bi" : 'http://systinet.com/wsdl/de/adtech/helios/BannerManagement/'
+                                        },
+                                        Item : [ 
+                                            {
+                                            attributes : { "xsi:type" : 'bi:BannerInfo' },
+                                            assetTypeId: 0,
+                                            bannerNumber: 1,
+                                            bannerReferenceId: 24030672,
+                                            campaignId: 6262256,
+                                            campaignVersion: 5,
+                                            description: '',
+                                            entityFrequencyConfig: {
+                                               frequencyCookiesOnly: true,
+                                               frequencyDistributed: false,
+                                               frequencyInterval: 0,
+                                               frequencyTypeId: -1,
+                                               uniqueFrequencyId: 115920876
+                                            },
+                                            extId: "",
+                                            id: 431070639,
+                                            isVersion: false,
+                                            mainNetwork: 5491,
+                                            mediaTypeId: 0,
+                                            name: 'une banner',
+                                            sequenceNo: 1,
+                                            sizeTypeId: -1,
+                                            statusId: 1,
+                                            styleTypeId: -1,
+                                            subNetwork: 1,
+                                            weight: 50
+                                            }
+                                        ]
+                                    }
+                                },
+                                campaignVersion: 3,
+                                comment: '',
+                                creativeList: [],
+                                description: '',
+                                endDate: '2015-01-12T13:40:00.000Z',
+                                extId: '',
+                                hasValidationError: 0,
+                                id: 109367675,
+                                isVersion: 0,
+                                mainNetwork: 5491,
+                                name: '',
+                                startDate: '2015-01-12T13:40:00.000Z',
+                                subNetwork: 1,
+                                todo: 1
+                            }
+                        ]
+                    }
+                }
+            })
+        );
+    });
+});
+
 describe('campaign',function(){
     var flush = true, campaign, mockSUtils, mockClient, resolveSpy, rejectSpy;
     beforeEach(function(){
@@ -359,6 +893,8 @@ describe('campaign',function(){
             }
         });
     });
+
+
 });
 
 

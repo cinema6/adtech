@@ -2,7 +2,7 @@ var adtech       = require('../index'),
     kCamp        = adtech.constants.ICampaign;
 
 function getCampaign(){
-    return adtech.campaignAdmin.getCampaignById(6189968);
+    return adtech.campaignAdmin.getCampaignById(6262256);
 }
 
 function getCustomerList(){
@@ -54,9 +54,8 @@ function updateDesiredImpressions() {
 function updateCampaign() {
     return adtech.campaignAdmin.getCampaignById(6262256)
         .then(function(campaign){
-            return campaign;
-            console.log('CAMPAIGN:',JSON.stringify(campaign,null,3));
             campaign.placementIdList = adtech.campaignAdmin.makePlacementIdList([3437144]);
+            console.log('UPDATE CAMPAIGN:',campaign);
             return adtech.campaignAdmin.updateCampaign(campaign);
         });
 }
@@ -75,7 +74,7 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return updateCampaign();
+    return getCampaign();
 }
 
 adtech.createClient()
