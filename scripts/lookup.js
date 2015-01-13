@@ -54,8 +54,10 @@ function updateDesiredImpressions() {
 function updateCampaign() {
     return adtech.campaignAdmin.getCampaignById(6262256)
         .then(function(campaign){
-            campaign.placementIdList = adtech.campaignAdmin.makePlacementIdList([3437144]);
-            console.log('UPDATE CAMPAIGN:',campaign);
+            campaign.placementIdList = [3437144];
+            campaign.priorityLevelOneKeywordIdList= [ "3171661", "3171662" ];
+            campaign.priorityLevelThreeKeywordIdList= [ "3171663" ];
+//            console.log('UPDATE CAMPAIGN:',campaign);
             return adtech.campaignAdmin.updateCampaign(campaign);
         });
 }
@@ -74,7 +76,7 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return getCampaign();
+    return updateCampaign();
 }
 
 adtech.createClient()

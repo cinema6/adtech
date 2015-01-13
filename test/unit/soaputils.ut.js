@@ -342,7 +342,7 @@ describe('soaputils',function(){
                 { name : 'obj2', val  : 2 },
                 { name : 'obj3', val  : 3 }
             ];
-            expect(soapUtils.makeTypedList('abc','TestType',rawList)).toEqual(
+            expect(soapUtils.makeTypedList('TestType',rawList,'abc')).toEqual(
                 {
                     Items : { 
                         attributes : { 'xmlns:cm' : 'abc' },
@@ -357,7 +357,7 @@ describe('soaputils',function(){
         });
         
         it('handles simple type: string',function(){
-            expect(soapUtils.makeTypedList('abc','string',['abc','def','ghi'])).toEqual(
+            expect(soapUtils.makeTypedList('string',['abc','def','ghi'],'abc')).toEqual(
                 {
                     Items : { 
                         attributes : { 'xmlns:cm' : 'abc' },
@@ -372,7 +372,7 @@ describe('soaputils',function(){
         });
         
         it('handles simple type: long',function(){
-            expect(soapUtils.makeTypedList('abc','long',[1,2,3])).toEqual(
+            expect(soapUtils.makeTypedList('long',[1,2,3],'abc')).toEqual(
                 {
                     Items : { 
                         attributes : { 'xmlns:cm' : 'abc' },
@@ -387,7 +387,7 @@ describe('soaputils',function(){
         });
         
         it('handles simple type: int',function(){
-            expect(soapUtils.makeTypedList('abc','int',[1,2,3])).toEqual(
+            expect(soapUtils.makeTypedList('int',[1,2,3],'abc')).toEqual(
                 {
                     Items : { 
                         attributes : { 'xmlns:cm' : 'abc' },
@@ -395,6 +395,34 @@ describe('soaputils',function(){
                             {attributes:{'xsi:type':'cm:int'},$value:1},
                             {attributes:{'xsi:type':'cm:int'},$value:2},
                             {attributes:{'xsi:type':'cm:int'},$value:3}
+                        ]
+                    }
+                }
+            );
+        });
+
+        it('does not add ns attributes if none passed',function(){
+            expect(soapUtils.makeTypedList('int',[1,2,3])).toEqual(
+                {
+                    Items : { 
+                        Item : [
+                            {attributes:{'xsi:type':'cm:int'},$value:1},
+                            {attributes:{'xsi:type':'cm:int'},$value:2},
+                            {attributes:{'xsi:type':'cm:int'},$value:3}
+                        ]
+                    }
+                }
+            );
+        });
+        
+        it('overrides pfx if passed',function(){
+            expect(soapUtils.makeTypedList('int',[1,2,3],null,'xx')).toEqual(
+                {
+                    Items : { 
+                        Item : [
+                            {attributes:{'xsi:type':'xx:int'},$value:1},
+                            {attributes:{'xsi:type':'xx:int'},$value:2},
+                            {attributes:{'xsi:type':'xx:int'},$value:3}
                         ]
                     }
                 }
