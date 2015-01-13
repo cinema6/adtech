@@ -174,12 +174,12 @@ describe('CampaignFeatures',function(){
 });
 
 describe('objectTo__',function(){
-    var campaign,
+    var campaign, mockSUtils, context, 
         bannerInfoObjectIn, bannerInfoObjectOut,
         bannerInfoObjectListIn, bannerInfoObjectListOut,
         bannerTimeRangeObjectIn, bannerTimeRangeObjectOut,
         bannerTimeRangeObjectListIn, bannerTimeRangeObjectListOut,
-        campaignFeaturesIn, campaignFeaturesOut,
+        campaignFeaturesIn, campaignFeaturesOut, campaignFeaturesOutWithContext,
         timeRangeObjectIn, timeRangeObjectOut,
         timeRangeObjectListIn, timeRangeObjectListOut,
         weekDaysObjectIn, weekDaysObjectOut,
@@ -199,6 +199,7 @@ describe('objectTo__',function(){
         bannerTimeRangeObjectListOut    = campaignObjects.bannerTimeRangeObjectListOut;
         campaignFeaturesIn              = campaignObjects.campaignFeaturesIn;
         campaignFeaturesOut             = campaignObjects.campaignFeaturesOut;
+        campaignFeaturesOutWithContext  = campaignObjects.campaignFeaturesOutWithContext;
         timeRangeObjectIn               = campaignObjects.timeRangeObjectIn;
         timeRangeObjectOut              = campaignObjects.timeRangeObjectOut;
         timeRangeObjectListIn           = campaignObjects.timeRangeObjectListIn;
@@ -212,7 +213,18 @@ describe('objectTo__',function(){
         dateRangeObjectListIn           = campaignObjects.dateRangeObjectListIn;
         dateRangeObjectListOut          = campaignObjects.dateRangeObjectListOut;
         
-        campaign            = require('../../lib/campaign');
+        campaign     = require('../../lib/campaign');
+        mockSUtils   = require('../../lib/soaputils');
+        context = {
+            campaignManagement : {
+                nameSpace : null,
+                prefix : 'xx'
+            },
+            xmlSchema : {
+                nameSpace : null,
+                prefix : 'dd'
+            }
+        };
     });
 
     it('BannerInfo',function(){
@@ -235,9 +247,22 @@ describe('objectTo__',function(){
             .toEqual(bannerTimeRangeObjectListOut);
     });
 
+    it('BannerTimeRangeList with context',function(){
+        spyOn(mockSUtils,'makeTypedList');
+        campaign.objectToBannerTimeRangeList(bannerTimeRangeObjectListIn,context);
+        expect(mockSUtils.makeTypedList.argsForCall[1][0]).toEqual('BannerTimeRange');
+        expect(mockSUtils.makeTypedList.argsForCall[1][2]).toBeNull();
+        expect(mockSUtils.makeTypedList.argsForCall[1][3]).toEqual('xx');
+    });
+
     it('CampaignFeatures',function(){
         expect(campaign.objectToCampaignFeatures(campaignFeaturesIn))
             .toEqual(campaignFeaturesOut);
+    });
+
+    it('CampaignFeatures with context',function(){
+        expect(campaign.objectToCampaignFeatures(campaignFeaturesIn,context))
+            .toEqual(campaignFeaturesOutWithContext);
     });
 
     it('TimeRange', function(){

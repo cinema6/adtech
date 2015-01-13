@@ -140,12 +140,12 @@ lib.bannerTimeRangeObjectListIn = [ lib.bannerTimeRangeObjectIn ];
 lib.bannerTimeRangeObjectListOut = {
     Items : {
         attributes : {
-           'xmlns:bt' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
+           'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
         },
         Item : [
             {
                 attributes : {
-                    'xsi:type' : 'bt:BannerTimeRange'
+                    'xsi:type' : 'cm:BannerTimeRange'
                 },
                 bannerDeliveryTypeId: 1,
                 bannerInfoList: lib.bannerInfoObjectListOut,
@@ -298,6 +298,117 @@ lib.campaignFeaturesOut = {
     }
 };
 
+lib.campaignFeaturesOutWithContext = {
+    attributes: { },
+    Keys: {
+        Item: [
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'ecpm' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'targeting' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'keywords' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'placements' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'geofencing' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'devicetargeting' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'cookietargeting' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'frequency' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'schedule' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'ngkeyword' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'keywordLevel' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'volume' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'postclick' },
+            { attributes: { 'xsi:type': 'dd:string' }, $value: 'carriertargeting' }
+        ]
+    },
+    Values : {
+        Item: [
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'0'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'1'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'0'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'1'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'0'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'0'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'0'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'1'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'1'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'1'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'1'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'1'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'0'}
+            },
+            {
+               attributes: { 'xsi:type': 'xx:CampaignFeatureSettings' },
+               locked:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               shared:  {attributes:{'xsi:type':'dd:boolean'},$value:'0'},
+               visible: {attributes:{'xsi:type':'dd:boolean'},$value:'0'}
+            }
+        ]
+    }
+};
+
+
 lib.timeRangeObjectIn = {
     deleted: false,
     endHour: 23,
@@ -323,12 +434,12 @@ lib.timeRangeObjectListIn = [ lib.timeRangeObjectIn ];
 lib.timeRangeObjectListOut = {
     Items: {
         attributes : {
-            'xmlns:tr' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
+            'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
         },
         Item: [
             {
                 attributes: {
-                    'xsi:type': 'tr:TimeRange'
+                    'xsi:type': 'cm:TimeRange'
                 },
                 deleted: 0,
                 endHour: 23,
@@ -376,12 +487,12 @@ lib.weekDaysObjectListIn = [ lib.weekDaysObjectIn ];
 lib.weekDaysObjectListOut = {
     Items : {
         attributes : {
-            'xmlns:wd' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
+            'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
         },
         Item : [
             {
                 attributes : {
-                    'xsi:type': 'wd:Weekdays'
+                    'xsi:type': 'cm:Weekdays'
                 },
                 daysOfWeek: {
                     attributes : {
@@ -475,12 +586,12 @@ lib.dateRangeObjectListIn = [ lib.dateRangeObjectIn ];
 lib.dateRangeObjectListOut = {
     Items: {
         attributes : {
-            'xmlns:dr' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
+            'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
         },
         Item: [
             {
                 attributes: {
-                    'xsi:type': 'dr:DateRange'
+                    'xsi:type': 'cm:DateRange'
                 },
                 deleted: 0,
                 deliveryGoal: {
