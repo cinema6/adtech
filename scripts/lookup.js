@@ -14,7 +14,7 @@ function getAdGoalList(){
 }
 
 function getCampaignStatus() {
-    return adtech.campaignAdmin.getCampaignStatusValues(['6314423']);
+    return adtech.campaignAdmin.getCampaignStatusValues(['6293522','6262256']);
 }
 
 function getCampaignStatusValues(){
@@ -82,7 +82,8 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return updatePlacementsInCampaigns();
+    return getCampaignStatus();
+//    return updatePlacementsInCampaigns();
 }
 
 adtech.createClient()

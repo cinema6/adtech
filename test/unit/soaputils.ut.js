@@ -199,27 +199,6 @@ describe('soaputils',function(){
         });
     });
 
-    describe('hashMapify', function(){
-        it('converts a HashMap object into a map',function(){
-            expect(soapUtils.hashMapify({
-                Keys : [ 'key1', 'key2', 'key3'],
-                Values: [ 'val1', 'val2', 'val3']
-            })).toEqual({
-                'key1' : 'val1',
-                'key2' : 'val2',
-                'key3' : 'val3'
-            });
-        });
-
-        it('returns null for an empty hashmap',function(){
-            expect(soapUtils.hashMapify({Keys:null,Values:null})).toBeNull();
-        });
-
-        it('does nothing with a non HashMap object',function(){
-            expect(soapUtils.hashMapify('a')).toEqual('a');
-        });
-    });
-
     describe('copyProp',function(){
         var testObj, dstObj;
         beforeEach(function(){
