@@ -39,7 +39,7 @@ function stopCampaign() {
 };
 
 function deleteCampaign() {
-    return adtech.campaignAdmin.deleteCampaign('6255177');
+    return adtech.campaignAdmin.deleteCampaign('6314704');
 };
 
 
@@ -76,7 +76,7 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return updateCampaign();
+    return deleteCampaign();
 }
 
 adtech.createClient()

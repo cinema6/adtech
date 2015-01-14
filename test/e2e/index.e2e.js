@@ -32,7 +32,7 @@ describe('adtech.index',function(){
         expectFailure = helpers.setExpectation('reject',true);
 
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-        //jasmine.getEnv().defaultTimeoutInterval = 30000;
+        jasmine.getEnv().defaultTimeoutInterval = 30000;
         if (adtech){
             return done();
         }
@@ -48,6 +48,7 @@ describe('adtech.index',function(){
         testData.createRecord('Page1');
         testData.createRecord('Plc1');
         testData.createRecord('Camp1');
+        testData.createRecord('Camp2');
         testData.createRecord('adGoalType');
         testData.createRecord('campaignType');
         testData.createRecord('optimizerType');
@@ -272,7 +273,7 @@ describe('adtech.index',function(){
                     cpm: 0
                 }
             };
-        
+//        console.log('CREATE:',require('util').inspect(campaign,{ depth: 99}));
         adtech.campaignAdmin.createCampaign(campaign)
         .then(resolveSpy,rejectSpy)
 //        .then(expectFailure)
@@ -284,6 +285,62 @@ describe('adtech.index',function(){
         })
         .done(done,done);
     });
+
+    it('creates Camp2', function(done){
+        var custRec = testData.getRecord('Cust1'),
+            advRec  = testData.getRecord('Adv1'),
+            campRec = testData.getRecord('Camp2'),
+            plcRec  = testData.getRecord('Plc1'),
+            adGoalTypeRec = testData.getRecord('adGoalType'),
+            cmpTypeRec = testData.getRecord('campaignType'),
+            optTypeRec = testData.getRecord('optimizerType'),
+            dtStart = new Date(),
+            dtEnd = new Date(dtStart.valueOf() + (60 * 60 * 24 * 365 * 1000));
+            campaign = {
+                adGoalTypeId    : adGoalTypeRec.id,
+                advertiserId    : advRec.id,
+                campaignFeatures  : {
+                    keywordLevel    : { locked: false, shared: false, visible: true },
+                    placements      : { locked: false, shared: false, visible: true },
+                    volume          : { locked: false, shared: false, visible: true }
+                },
+                campaignTypeId  : cmpTypeRec.id,
+                customerId      : custRec.id,
+                dateRangeList   : [{
+                    deliveryGoal : {
+                        desiredImpressions : 999999999
+                    },
+                    endDate: dtEnd,
+                    startDate: dtStart
+                }],
+                extId           : campRec.extId,
+                frequencyConfig : {
+                   type: kCamp.FREQUENCY_TYPE_NONE
+                },
+                name            : campRec.uname,
+                optimizerTypeId : optTypeRec.id,
+                optimizingConfig: {
+                    minClickRate: 0,
+                    minNoPlacements: 0
+                },
+                placementIdList : [plcRec.id],
+                pricingConfig :  {
+                    cpm: 0
+                }
+            };
+//        console.log('CREATE:',require('util').inspect(campaign,{ depth: 99}));
+        adtech.campaignAdmin.createCampaign(campaign)
+        .then(resolveSpy,rejectSpy)
+//        .then(expectFailure)
+        .then(function(){
+            var result = resolveSpy.arg();
+            expect(result.name).toEqual(campaign.name);
+            expect(result.extId).toEqual(campaign.extId);
+            testData.set('Camp2',result.id,result);
+        })
+        .done(done,done);
+    });
+
 
     it('creates Bann1', function(done){
         var campRec = testData.getRecord('Camp1'),
@@ -338,7 +395,7 @@ describe('adtech.index',function(){
             var result = resolveSpy.arg();
             expect(result.campaignId).toEqual(campRec.id);
             expect(result.errorId).toEqual(0);
-            expect(result.errorMsg).toBeNull();
+            expect(result.errorMsg).toEqual('');
             resolveSpy.reset();
             rejectSpy.reset();
             return checkForCampaignStatus(campRec.id,kCamp.STATUS_ACTIVE);
@@ -364,8 +421,12 @@ describe('adtech.index',function(){
     });
 
     it('deletes Everything', function(done){
-        var deleteCampaign = function(){
+        var deleteCampaign1 = function(){
                 var rec = testData.getRecord('Camp1');
+                return adtech.campaignAdmin.deleteCampaign(rec.id);
+            },
+            deleteCampaign2 = function(){
+                var rec = testData.getRecord('Camp2');
                 return adtech.campaignAdmin.deleteCampaign(rec.id);
             },
             deleteAdvertiser = function(){
@@ -381,7 +442,8 @@ describe('adtech.index',function(){
                 return adtech.websiteAdmin.deleteWebsite(rec.id);
             };
 
-        deleteCampaign()
+        deleteCampaign1()
+        .then(deleteCampaign2)
         .then(deleteAdvertiser)
         .then(deleteCustomer)
         .then(deleteWebsite)
