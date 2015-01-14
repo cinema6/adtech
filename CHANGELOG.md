@@ -1,5 +1,11 @@
 # adtech Changelog
 
+## v1.0.0 (January 14, 2015)
+* [FEATURE]: can now update, start & stop campaigns
+
+## v0.3.0 (December 29, 2014)
+* [FEATURE]: can now set keywords
+
 ## v0.2.0 (December 17, 2014)
 * [FEATURE]: cinema6/adtech#4 - can now set contacts for advertisers/customers
 
