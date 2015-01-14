@@ -474,6 +474,7 @@ describe('campaign',function(){
             'getOptimizerTypeList',
             'makeDateRangeList',
             'makeCampaignFeatures',
+            'makeKeywordIdList',
             'makePlacementIdList',
             'updateCampaign',
             'updateCampaignDesiredImpressions',
@@ -567,6 +568,18 @@ describe('campaign',function(){
         campaign.getOptimizerTypeList(mockClient);
         expect(mockSUtils.getList)
             .toHaveBeenCalledWith('getOptimizerTypeList','OptimizerType','order',[mockClient]);
+    });
+    
+    it('makeKeywordIdList',function(){
+        spyOn(mockSUtils,'makeTypedList');
+        var mockList = [1234,5678];
+        campaign.makeKeywordIdList(mockClient,mockList);
+        expect(mockSUtils.makeTypedList)
+            .toHaveBeenCalledWith(
+                'long',
+                [ { $value: 1234 }, { $value: 5678 } ],
+                'http://www.w3.org/2001/XMLSchema'
+                );
     });
 
     it('makeDateRangeList',function(){

@@ -37,7 +37,8 @@ describe('customer',function(){
             'getCustomerById',
             'getCustomerList',
             'updateCustomer',
-            'makeAdvertiserList'
+            'makeAdvertiserList',
+            'makeContactList'
         ]);
     });
     
@@ -154,4 +155,31 @@ describe('customer',function(){
         });
     });
 
+    it('makeContactList', function() {
+        var contacts = [
+            {email: 'johntest@foo.com', phone: '123'},
+            {email: 'janetest@foo.com', phone: '987'}
+        ];
+        expect(admin.makeContactList({}, contacts)).toEqual({
+            Items : {
+                attributes : { 
+                    'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/UserManagement/'
+                },
+                Item : [ 
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:ContactData',
+                        },
+                        email: 'johntest@foo.com', phone: '123'
+                    },
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:ContactData',
+                        },
+                        email: 'janetest@foo.com', phone: '987'
+                    }
+                ]
+            } 
+        });
+    });
 });

@@ -1,4 +1,4 @@
-xdescribe('adtech.customerAdmin',function(){
+describe('adtech.customerAdmin',function(){
     var adtech, expectSuccess, expectFailure, resolveSpy, rejectSpy,
         testData, testRun, compData;
     beforeEach(function(done){
@@ -42,6 +42,7 @@ xdescribe('adtech.customerAdmin',function(){
         var rec = testData.getRecord('Adv1'),
             ad = {
                 companyData     : compData,
+                contacts        : adtech.customerAdmin.makeContactList([{email: 'test@foo.com'}]),
                 extId           : rec.extId,
                 name            : rec.uname
             };
@@ -52,6 +53,8 @@ xdescribe('adtech.customerAdmin',function(){
         .then(function(){
             var result = resolveSpy.arg();
             expect(result.name).toEqual(ad.name);
+            expect(result.contacts).toBeDefined();
+            expect(result.contacts[0].email).toBe('test@foo.com');
             expect(result.extId).toEqual(ad.extId);
             testData.set('Adv1',result.id,result);
         })

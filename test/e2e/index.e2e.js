@@ -271,7 +271,8 @@ describe('adtech.index',function(){
                 placementIdList : adtech.campaignAdmin.makePlacementIdList([plcRec.id]),
                 pricingConfig :  {
                     cpm: 0
-                }
+                },
+                priorityLevelOneKeywordIdList: adtech.campaignAdmin.makeKeywordIdList([3171662])
             };
 //        console.log('CREATE:',require('util').inspect(campaign,{ depth: 99}));
         adtech.campaignAdmin.createCampaign(campaign)
@@ -281,6 +282,7 @@ describe('adtech.index',function(){
             var result = resolveSpy.arg();
             expect(result.name).toEqual(campaign.name);
             expect(result.extId).toEqual(campaign.extId);
+            expect(result.priorityLevelOneKeywordIdList).toEqual(['3171662']);
             testData.set('Camp1',result.id,result);
         })
         .done(done,done);
