@@ -2,7 +2,7 @@ var adtech       = require('../index'),
     kCamp        = adtech.constants.ICampaign;
 
 function getCampaign(){
-    return adtech.campaignAdmin.getCampaignById(6189968);
+    return adtech.campaignAdmin.getCampaignById(6262256);
 }
 
 function getCustomerList(){
@@ -11,6 +11,61 @@ function getCustomerList(){
 
 function getAdGoalList(){
     return adtech.campaignAdmin.getAdGoalTypeList();
+}
+
+function getCampaignStatus() {
+    return adtech.campaignAdmin.getCampaignStatusValues(['6293522','6262256']);
+}
+
+function getCampaignStatusValues(){
+    var aove = new adtech.AOVE();
+    aove.addExpression(
+        new adtech.AOVE.StringExpression('name','Fuzzy Wuzzy3')
+    );
+    return adtech.campaignAdmin.getCampaignStatusValues(['6255177','6255627','9999999'],aove);
+    //return adtech.campaignAdmin.getCampaignStatusValues(null,aove);
+};
+
+function holdCampaign() {
+    return adtech.pushAdmin.holdCampaignById('6255177');
+};
+
+function startCampaign() {
+    return adtech.pushAdmin.startCampaignById('6314771');
+};
+
+function stopCampaign() {
+    return adtech.pushAdmin.stopCampaignById('6255177');
+};
+
+function deleteCampaign() {
+    return adtech.campaignAdmin.deleteCampaign('6314704');
+};
+
+
+function updateCampaignStatusValues() {
+    return adtech.campaignAdmin.updateCampaignStatusValues({'6262256':2});
+};
+
+function updateDesiredImpressions() {
+    return adtech.campaignAdmin.updateCampaignDesiredImpressions({'6262256':250455});
+}
+
+function updatePlacementsInCampaigns(){
+    return adtech.campaignAdmin.updatePlacementsInCampaigns([
+            { addPlacements : [ 3439162, 3439163], campaignId : 6262256 }
+    ]);
+}
+
+function updateCampaign() {
+    return adtech.campaignAdmin.getCampaignById(6262256)
+        .then(function(campaign){
+            campaign.placementIdList = [3437144];
+            campaign.priorityLevelOneKeywordIdList= [ "3171661", "3171662" ];
+            campaign.priorityLevelThreeKeywordIdList= [ "3171663" ];
+//            console.log('UPDATE CAMPAIGN:',campaign);
+            return adtech.campaignAdmin.updateCampaign(campaign);
+        });
 }
 
 function getOptimizerList(){
@@ -27,7 +82,8 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return getCampaign();
+    return getCampaignStatus();
+//    return updatePlacementsInCampaigns();
 }
 
 adtech.createClient()
@@ -36,6 +92,6 @@ adtech.createClient()
     console.log(JSON.stringify(result,null,3));
 })
 .catch(function(err){
-    console.log('Error:',err);
+    console.log('Error:',err.stack);
     process.exit(1);
 });

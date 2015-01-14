@@ -173,22 +173,286 @@ describe('CampaignFeatures',function(){
     });
 });
 
+describe('objectTo__',function(){
+    var campaign, mockSUtils, context, 
+        bannerInfoObjectIn, bannerInfoObjectOut,
+        bannerInfoObjectListIn, bannerInfoObjectListOut,
+        bannerTimeRangeObjectIn, bannerTimeRangeObjectOut,
+        bannerTimeRangeObjectListIn, bannerTimeRangeObjectListOut,
+        campaignFeaturesIn, campaignFeaturesOut, campaignFeaturesOutWithContext,
+        timeRangeObjectIn, timeRangeObjectOut,
+        timeRangeObjectListIn, timeRangeObjectListOut,
+        weekDaysObjectIn, weekDaysObjectOut,
+        weekDaysObjectListIn, weekDaysObjectListOut,
+        dateRangeObjectIn, dateRangeObjectOut,
+        dateRangeObjectListIn, dateRangeObjectListOut;
+
+    beforeEach(function(){
+        var campaignObjects = require('./campaign-objects');
+        bannerInfoObjectIn              = campaignObjects.bannerInfoObjectIn;
+        bannerInfoObjectOut             = campaignObjects.bannerInfoObjectOut;
+        bannerInfoObjectListIn          = campaignObjects.bannerInfoObjectListIn;
+        bannerInfoObjectListOut         = campaignObjects.bannerInfoObjectListOut;
+        bannerTimeRangeObjectIn         = campaignObjects.bannerTimeRangeObjectIn;
+        bannerTimeRangeObjectOut        = campaignObjects.bannerTimeRangeObjectOut;
+        bannerTimeRangeObjectListIn     = campaignObjects.bannerTimeRangeObjectListIn;
+        bannerTimeRangeObjectListOut    = campaignObjects.bannerTimeRangeObjectListOut;
+        campaignFeaturesIn              = campaignObjects.campaignFeaturesIn;
+        campaignFeaturesOut             = campaignObjects.campaignFeaturesOut;
+        campaignFeaturesOutWithContext  = campaignObjects.campaignFeaturesOutWithContext;
+        timeRangeObjectIn               = campaignObjects.timeRangeObjectIn;
+        timeRangeObjectOut              = campaignObjects.timeRangeObjectOut;
+        timeRangeObjectListIn           = campaignObjects.timeRangeObjectListIn;
+        timeRangeObjectListOut          = campaignObjects.timeRangeObjectListOut;
+        weekDaysObjectIn                = campaignObjects.weekDaysObjectIn;
+        weekDaysObjectOut               = campaignObjects.weekDaysObjectOut;
+        weekDaysObjectListIn            = campaignObjects.weekDaysObjectListIn;
+        weekDaysObjectListOut           = campaignObjects.weekDaysObjectListOut;
+        dateRangeObjectIn               = campaignObjects.dateRangeObjectIn;
+        dateRangeObjectOut              = campaignObjects.dateRangeObjectOut;
+        dateRangeObjectListIn           = campaignObjects.dateRangeObjectListIn;
+        dateRangeObjectListOut          = campaignObjects.dateRangeObjectListOut;
+        
+        campaign     = require('../../lib/campaign');
+        mockSUtils   = require('../../lib/soaputils');
+        context = {
+            campaignManagement : {
+                nameSpace : null,
+                prefix : 'xx'
+            },
+            xmlSchema : {
+                nameSpace : null,
+                prefix : 'dd'
+            }
+        };
+    });
+
+    it('BannerInfo',function(){
+        expect(campaign.objectToBannerInfo(bannerInfoObjectIn))
+            .toEqual(bannerInfoObjectOut);
+    });
+
+    it('BannerInfoList',function(){
+        expect(campaign.objectToBannerInfoList(bannerInfoObjectListIn))
+            .toEqual(bannerInfoObjectListOut);
+    });
+    
+    it('BannerTimeRange',function(){
+        expect(campaign.objectToBannerTimeRange(bannerTimeRangeObjectIn))
+            .toEqual(bannerTimeRangeObjectOut);
+    });
+
+    it('BannerTimeRangeList',function(){
+        expect(campaign.objectToBannerTimeRangeList(bannerTimeRangeObjectListIn))
+            .toEqual(bannerTimeRangeObjectListOut);
+    });
+
+    it('BannerTimeRangeList with context',function(){
+        spyOn(mockSUtils,'makeTypedList');
+        campaign.objectToBannerTimeRangeList(bannerTimeRangeObjectListIn,context);
+        expect(mockSUtils.makeTypedList.argsForCall[1][0]).toEqual('BannerTimeRange');
+        expect(mockSUtils.makeTypedList.argsForCall[1][2]).toBeNull();
+        expect(mockSUtils.makeTypedList.argsForCall[1][3]).toEqual('xx');
+    });
+
+    it('CampaignFeatures',function(){
+        expect(campaign.objectToCampaignFeatures(campaignFeaturesIn))
+            .toEqual(campaignFeaturesOut);
+    });
+
+    it('CampaignFeatures with context',function(){
+        expect(campaign.objectToCampaignFeatures(campaignFeaturesIn,context))
+            .toEqual(campaignFeaturesOutWithContext);
+    });
+
+    it('TimeRange', function(){
+        expect(campaign.objectToTimeRange(timeRangeObjectIn))
+            .toEqual(timeRangeObjectOut);
+    });
+    
+    it('TimeRangeList', function(){
+        expect(campaign.objectToTimeRangeList(timeRangeObjectListIn))
+            .toEqual(timeRangeObjectListOut);
+    });
+    
+    it('WeekDay', function(){
+        expect(campaign.objectToWeekdays(weekDaysObjectIn))
+            .toEqual(weekDaysObjectOut);
+    });
+    
+    it('WeekDayList', function(){
+        expect(campaign.objectToWeekdaysList(weekDaysObjectListIn))
+            .toEqual(weekDaysObjectListOut);
+    });
+    
+    it('DateRange', function(){
+        expect(campaign.objectToDateRange(dateRangeObjectIn))
+            .toEqual(dateRangeObjectOut);
+    });
+    
+    it('DateRangeList', function(){
+        expect(campaign.objectToDateRangeList(dateRangeObjectListIn))
+            .toEqual(dateRangeObjectListOut);
+    });
+});
+
+xdescribe('objectToCampaign',function(){
+    var campaign;
+    beforeEach(function(){
+        campaign     = require('../../lib/campaign');
+    });
+
+    it('handles dates on root campaign',function(){
+        var dt = new Date(1421070000000);
+
+        expect(campaign.objectToCampaign({
+            absoluteEndDate: dt,
+            absoluteStartDate: dt
+        })).toEqual(jasmine.objectContaining({
+            absoluteEndDate: '2015-01-12T13:40:00.000Z',
+            absoluteStartDate:'2015-01-12T13:40:00.000Z' 
+        }));
+    });
+
+    it('handles banner time range', function(){
+        var dt = new Date(1421070000000);
+        expect(campaign.prepareCampaign({
+            bannerTimeRangeList: [
+                {
+                 bannerDeliveryTypeId: 1,
+                 bannerInfoList: [
+                    {
+                       assetTypeId: 0,
+                       bannerNumber: 1,
+                       bannerReferenceId: 24030672,
+                       campaignId: 6262256,
+                       campaignVersion: 5,
+                       description: '',
+                       entityFrequencyConfig: {
+                          frequencyCookiesOnly: true,
+                          frequencyDistributed: false,
+                          frequencyInterval: 0,
+                          frequencyTypeId: -1,
+                          uniqueFrequencyId: 115920876
+                       },
+                       extId: "",
+                       id: 431070639,
+                       isVersion: false,
+                       mainNetwork: 5491,
+                       mediaTypeId: 0,
+                       name: 'une banner',
+                       sequenceNo: 1,
+                       sizeTypeId: -1,
+                       statusId: 1,
+                       styleTypeId: -1,
+                       subNetwork: 1,
+                       weight: 50
+                    }
+                 ],
+                 campaignVersion: 3,
+                 comment: '',
+                 creativeList: [],
+                 description: '',
+                 endDate: dt,
+                 extId: '',
+                 hasValidationError: false,
+                 id: 109367675,
+                 isVersion: false,
+                 mainNetwork: 5491,
+                 name: '',
+                 startDate: dt,
+                 subNetwork: 1,
+                 todo: false
+              } 
+            ]
+        })).toEqual(
+            jasmine.objectContaining({
+                bannerTimeRangeList : {
+                    Items : {
+                        attributes : { 
+                            "xmlns:bt" : 'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'    },
+                        Item : [
+                            {
+                                attributes : { "xsi:type" : 'bt:BannerTimeRange' },
+                                bannerDeliveryTypeId : 1,
+                                bannerInfoList : {
+                                    Items : {
+                                        attributes : {
+                                            "xmlsns:bi" : 'http://systinet.com/wsdl/de/adtech/helios/BannerManagement/'
+                                        },
+                                        Item : [ 
+                                            {
+                                            attributes : { "xsi:type" : 'bi:BannerInfo' },
+                                            assetTypeId: 0,
+                                            bannerNumber: 1,
+                                            bannerReferenceId: 24030672,
+                                            campaignId: 6262256,
+                                            campaignVersion: 5,
+                                            description: '',
+                                            entityFrequencyConfig: {
+                                               frequencyCookiesOnly: true,
+                                               frequencyDistributed: false,
+                                               frequencyInterval: 0,
+                                               frequencyTypeId: -1,
+                                               uniqueFrequencyId: 115920876
+                                            },
+                                            extId: "",
+                                            id: 431070639,
+                                            isVersion: false,
+                                            mainNetwork: 5491,
+                                            mediaTypeId: 0,
+                                            name: 'une banner',
+                                            sequenceNo: 1,
+                                            sizeTypeId: -1,
+                                            statusId: 1,
+                                            styleTypeId: -1,
+                                            subNetwork: 1,
+                                            weight: 50
+                                            }
+                                        ]
+                                    }
+                                },
+                                campaignVersion: 3,
+                                comment: '',
+                                creativeList: [],
+                                description: '',
+                                endDate: '2015-01-12T13:40:00.000Z',
+                                extId: '',
+                                hasValidationError: 0,
+                                id: 109367675,
+                                isVersion: 0,
+                                mainNetwork: 5491,
+                                name: '',
+                                startDate: '2015-01-12T13:40:00.000Z',
+                                subNetwork: 1,
+                                todo: 1
+                            }
+                        ]
+                    }
+                }
+            })
+        );
+    });
+});
+
 describe('campaign',function(){
-    var flush = true, campaign, mockSUtils, mockClient;
+    var flush = true, campaign, mockSUtils, mockClient, resolveSpy, rejectSpy;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
         campaign     = require('../../lib/campaign');
         mockSUtils   = require('../../lib/soaputils');
+        resolveSpy   = jasmine.createSpy('resolve');
+        rejectSpy    = jasmine.createSpy('reject');
         
         mockClient = { };
 
         spyOn(mockSUtils,'createSoapSSLClient');
         spyOn(mockSUtils,'makeAdmin');
-        spyOn(mockSUtils,'makeTypedList');
         spyOn(mockSUtils,'createObject');
         spyOn(mockSUtils,'deleteObject');
         spyOn(mockSUtils,'getList');
         spyOn(mockSUtils,'getObject');
+        spyOn(mockSUtils,'exec');
     });
 
     it('uses soaputils makeAdmin to create admin',function(){
@@ -205,11 +469,17 @@ describe('campaign',function(){
             'getCampaignByExtId',
             'getCampaignById',
             'getCampaignList',
+            'getCampaignStatusValues',
             'getCampaignTypeList',
             'getOptimizerTypeList',
             'makeDateRangeList',
+            'makeCampaignFeatures',
             'makeKeywordIdList',
-            'makeCampaignFeatures'
+            'makePlacementIdList',
+            'updateCampaign',
+            'updateCampaignDesiredImpressions',
+            'updateCampaignStatusValues',
+            'updatePlacementsInCampaigns'
         ]);
     });
 
@@ -270,6 +540,30 @@ describe('campaign',function(){
     
     });
 
+    it('getCampaignStatusValues', function(done){
+        spyOn(mockSUtils,'makeTypedList');
+        mockClient.getCampaignStatusValues = jasmine.createSpy('getCampaignStatusValues');
+        mockClient.getCampaignStatusValues.andCallFake(function(a,b){
+            return b(null,{});
+        });
+
+        campaign.getCampaignStatusValues(mockClient,['123','456'])
+                .then(resolveSpy,rejectSpy)
+                .then(function(){
+                    expect(resolveSpy).toHaveBeenCalledWith(null);
+                    expect(rejectSpy).not.toHaveBeenCalled(); 
+                    expect(mockSUtils.makeTypedList)
+                        .toHaveBeenCalledWith(
+                            'string',
+                            ['123','456'],
+                            'http://www.w3.org/2001/XMLSchema'
+                            );
+
+                    expect(mockClient.getCampaignStatusValues).toHaveBeenCalled();
+                })
+                .done(done);
+    });
+
     it('getOptimizerTypeList', function(){
         campaign.getOptimizerTypeList(mockClient);
         expect(mockSUtils.getList)
@@ -277,24 +571,26 @@ describe('campaign',function(){
     });
     
     it('makeKeywordIdList',function(){
+        spyOn(mockSUtils,'makeTypedList');
         var mockList = [1234,5678];
         campaign.makeKeywordIdList(mockClient,mockList);
         expect(mockSUtils.makeTypedList)
             .toHaveBeenCalledWith(
-                'http://www.w3.org/2001/XMLSchema',
                 'long',
-                [ { $value: 1234 }, { $value: 5678 } ]
+                [ { $value: 1234 }, { $value: 5678 } ],
+                'http://www.w3.org/2001/XMLSchema'
                 );
     });
 
     it('makeDateRangeList',function(){
+        spyOn(mockSUtils,'makeTypedList');
         var mockList = [{p:1},{p:2}];
         campaign.makeDateRangeList(mockClient,mockList);
         expect(mockSUtils.makeTypedList)
             .toHaveBeenCalledWith(
-                'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/',
                 'DateRange',
-                mockList
+                mockList,
+                'http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/'
                 );
     });
 
@@ -340,6 +636,68 @@ describe('campaign',function(){
                 ]
             }
         });
+    });
+
+
+    it('updatePlacementsInCampaigns',function(){
+        campaign.updatePlacementsInCampaigns(mockClient,[
+            { addPlacements : [ 123, 456 ], campaignId : 333, deletePlacements: [999] },
+            { addPlacements : [ 777, 888 ], campaignId : 222  },
+            { campaignId : 111, deletePlacements: [666] },
+        ]);
+        expect(mockSUtils.exec).toHaveBeenCalledWith(
+            'updatePlacementsInCampaigns', 'updateRequests', [{  }, {
+                PlacementUpdateRequest :  [ 
+                    { 
+                        addPlacements : { 
+                            Items : { 
+                                Item : [ 
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 123 },
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 456 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema' }
+                            } 
+                        },
+                        campaignId : 333,
+                        deletePlacements : {
+                            Items : {
+                                Item : [
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 999 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema' }
+                            } 
+                        } 
+                    },
+                    { 
+                        addPlacements : {
+                            Items : {
+                                Item : [ 
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 777 },
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 888 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema'}
+                            }
+                        },
+                        campaignId : 222,
+                        deletePlacements : { attributes : { 'xsi:nil' : true }, $value : '' }
+                    },
+                    { 
+                        addPlacements : { attributes : { 'xsi:nil' : true }, $value : '' },
+                        campaignId : 111,
+                        deletePlacements : {
+                            Items : { 
+                                Item : [ 
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 666 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema'}
+                            }
+                        } 
+                    } 
+                ]
+            }
+        ]
+    );
+
     });
 });
 
