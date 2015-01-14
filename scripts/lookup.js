@@ -51,6 +51,12 @@ function updateDesiredImpressions() {
     return adtech.campaignAdmin.updateCampaignDesiredImpressions({'6262256':250455});
 }
 
+function updatePlacementsInCampaigns(){
+    return adtech.campaignAdmin.updatePlacementsInCampaigns([
+            { addPlacements : [ 3439162, 3439163], campaignId : 6262256 }
+    ]);
+}
+
 function updateCampaign() {
     return adtech.campaignAdmin.getCampaignById(6262256)
         .then(function(campaign){
@@ -76,7 +82,7 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return deleteCampaign();
+    return updatePlacementsInCampaigns();
 }
 
 adtech.createClient()

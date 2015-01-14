@@ -448,11 +448,11 @@ describe('campaign',function(){
 
         spyOn(mockSUtils,'createSoapSSLClient');
         spyOn(mockSUtils,'makeAdmin');
-        spyOn(mockSUtils,'makeTypedList');
         spyOn(mockSUtils,'createObject');
         spyOn(mockSUtils,'deleteObject');
         spyOn(mockSUtils,'getList');
         spyOn(mockSUtils,'getObject');
+        spyOn(mockSUtils,'exec');
     });
 
     it('uses soaputils makeAdmin to create admin',function(){
@@ -477,7 +477,8 @@ describe('campaign',function(){
             'makePlacementIdList',
             'updateCampaign',
             'updateCampaignDesiredImpressions',
-            'updateCampaignStatusValues'
+            'updateCampaignStatusValues',
+            'updatePlacementsInCampaigns'
         ]);
     });
 
@@ -539,6 +540,7 @@ describe('campaign',function(){
     });
 
     it('getCampaignStatusValues', function(done){
+        spyOn(mockSUtils,'makeTypedList');
         mockClient.getCampaignStatusValues = jasmine.createSpy('getCampaignStatusValues');
         mockClient.getCampaignStatusValues.andCallFake(function(a,b){
             return b(null,{});
@@ -568,6 +570,7 @@ describe('campaign',function(){
     });
 
     it('makeDateRangeList',function(){
+        spyOn(mockSUtils,'makeTypedList');
         var mockList = [{p:1},{p:2}];
         campaign.makeDateRangeList(mockClient,mockList);
         expect(mockSUtils.makeTypedList)
@@ -623,6 +626,66 @@ describe('campaign',function(){
     });
 
 
+    it('updatePlacementsInCampaigns',function(){
+        campaign.updatePlacementsInCampaigns(mockClient,[
+            { addPlacements : [ 123, 456 ], campaignId : 333, deletePlacements: [999] },
+            { addPlacements : [ 777, 888 ], campaignId : 222  },
+            { campaignId : 111, deletePlacements: [666] },
+        ]);
+        expect(mockSUtils.exec).toHaveBeenCalledWith(
+            'updatePlacementsInCampaigns', 'updateRequests', [{  }, {
+                PlacementUpdateRequest :  [ 
+                    { 
+                        addPlacements : { 
+                            Items : { 
+                                Item : [ 
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 123 },
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 456 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema' }
+                            } 
+                        },
+                        campaignId : 333,
+                        deletePlacements : {
+                            Items : {
+                                Item : [
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 999 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema' }
+                            } 
+                        } 
+                    },
+                    { 
+                        addPlacements : {
+                            Items : {
+                                Item : [ 
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 777 },
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 888 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema'}
+                            }
+                        },
+                        campaignId : 222,
+                        deletePlacements : { attributes : { 'xsi:nil' : true }, $value : '' }
+                    },
+                    { 
+                        addPlacements : { attributes : { 'xsi:nil' : true }, $value : '' },
+                        campaignId : 111,
+                        deletePlacements : {
+                            Items : { 
+                                Item : [ 
+                                    { attributes : { 'xsi:type' : 'xsd:long' }, $value : 666 }
+                                ],
+                                attributes : { 'xmlns:xsd':'http://www.w3.org/2001/XMLSchema'}
+                            }
+                        } 
+                    } 
+                ]
+            }
+        ]
+    );
+
+    });
 });
 
 
