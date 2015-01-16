@@ -38,7 +38,8 @@ describe('customer',function(){
             'getCustomerList',
             'updateCustomer',
             'makeAdvertiserList',
-            'makeContactList'
+            'makeContactList',
+            'makeUserList'
         ]);
     });
     
