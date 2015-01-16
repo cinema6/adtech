@@ -571,15 +571,28 @@ describe('campaign',function(){
     });
     
     it('makeKeywordIdList',function(){
-        spyOn(mockSUtils,'makeTypedList');
-        var mockList = [1234,5678];
-        campaign.makeKeywordIdList(mockClient,mockList);
-        expect(mockSUtils.makeTypedList)
-            .toHaveBeenCalledWith(
-                'long',
-                [ { $value: 1234 }, { $value: 5678 } ],
-                'http://www.w3.org/2001/XMLSchema'
-                );
+        var ids = ['123', '456'];
+        expect(campaign.makeKeywordIdList({}, ids)).toEqual({
+            Items : {
+                attributes : { 
+                    'xmlns:cm' : 'http://www.w3.org/2001/XMLSchema'
+                },
+                Item : [ 
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:long',
+                        },
+                        $value: '123'
+                    },
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:long',
+                        },
+                        $value: '456'
+                    }
+                ]
+            }
+        });
     });
 
     it('makeDateRangeList',function(){

@@ -182,4 +182,29 @@ describe('customer',function(){
             } 
         });
     });
+
+    it('makeUserList', function() {
+        var ids = ['123', '456'];
+        expect(admin.makeUserList({}, ids)).toEqual({
+            Items : {
+                attributes : { 
+                    'xmlns:cm' : 'http://www.w3.org/2001/XMLSchema'
+                },
+                Item : [ 
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:long',
+                        },
+                        $value: '123'
+                    },
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:long',
+                        },
+                        $value: '456'
+                    }
+                ]
+            }
+        });
+    });
 });
