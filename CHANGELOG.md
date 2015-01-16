@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.0.1 (January 16, 2015)
+* [FIX]: Add makeUserList function to customer admin
+
 ## v1.0.0 (January 14, 2015)
 * [FEATURE]: can now update, start & stop campaigns
 
