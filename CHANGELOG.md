@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.0.2 (January 21, 2015)
+* [FIX]: Add makePageList function to website admin
+
 ## v1.0.1 (January 16, 2015)
 * [FIX]: Add makeUserList function to customer admin
 
