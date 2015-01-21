@@ -39,6 +39,7 @@ describe('website',function(){
             'getWebsiteByExtId',
             'getWebsiteById',
             'getWebsiteList',
+            'makePageList',
             'updatePage',
             'updatePlacement',
             'updateWebsite'    
@@ -56,6 +57,53 @@ describe('website',function(){
         });
         expect(args[2]).toEqual(key);
         expect(args[3]).toEqual(cert);
+    });
+    
+    it('makePageList', function() {
+        var pageList = [
+            { id: 123, placementList: [{id: 987, name: 'embed_content'}, {id: 876, name: 'embed_display'}] },
+            { id: 456, name: 'second page' }
+        ];
+        
+        expect(website.makePageList({}, pageList)).toEqual({
+            Items : {
+                attributes : {
+                    'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/WebsiteManagement/'
+                },
+                Item : [ 
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:Page',
+                        },
+                        id : 123,
+                        placementList: { Items: {
+                            attributes : {
+                                'xmlns:cm' : 'http://systinet.com/wsdl/de/adtech/helios/WebsiteManagement/'
+                            },
+                            Item: [
+                                {
+                                    attributes: { 'xsi:type': 'cm:Placement' },
+                                    id: 987,
+                                    name: 'embed_content'
+                                },
+                                {
+                                    attributes: { 'xsi:type': 'cm:Placement' },
+                                    id: 876,
+                                    name: 'embed_display'
+                                }
+                            ]
+                        } }
+                    },
+                    { 
+                        attributes : {
+                            'xsi:type' : 'cm:Page',
+                        },
+                        id : 456,
+                        name: 'second page'
+                    }
+                ]
+            }
+        });
     });
 
     it('createPage', function(){
