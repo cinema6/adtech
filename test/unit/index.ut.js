@@ -7,6 +7,7 @@ describe('index',function(){
             banner      = require('../../lib/banner');
             campaign    = require('../../lib/campaign');
             customer    = require('../../lib/customer');
+            keyword     = require('../../lib/keyword');
             push        = require('../../lib/push');
             website     = require('../../lib/website');
             constants   = require('../../lib/constants');
@@ -15,6 +16,7 @@ describe('index',function(){
             spyOn(banner,'createAdmin').andReturn(q(admin));
             spyOn(campaign,'createAdmin').andReturn(q(admin));
             spyOn(customer,'createAdmin').andReturn(q(admin));
+            spyOn(keyword,'createAdmin').andReturn(q(admin));
             spyOn(push,'createAdmin').andReturn(q(admin));
             spyOn(website,'createAdmin').andReturn(q(admin));
             index   = require('../../index.js');
@@ -56,6 +58,17 @@ describe('index',function(){
             })
             .done(done);
         });
+
+        it('createKeywordAdmin is proxied',function(done){
+            index.createKeywordAdmin()
+            .then(resolveSpy,rejectSpy)
+            .then(function(){
+                expect(resolveSpy).toHaveBeenCalled();
+                expect(keyword.createAdmin).toHaveBeenCalled();
+                expect(index.keywordAdmin).toBe(admin);
+            })
+            .done(done);
+        });
         
         it('createPushAdmin is proxied',function(done){
             index.createPushAdmin()
@@ -90,8 +103,29 @@ describe('index',function(){
                 expect(banner.createAdmin).toHaveBeenCalled();
                 expect(campaign.createAdmin).toHaveBeenCalled();
                 expect(customer.createAdmin).toHaveBeenCalled();
+                expect(keyword.createAdmin).toHaveBeenCalled();
                 expect(push.createAdmin).toHaveBeenCalled();
                 expect(website.createAdmin).toHaveBeenCalled();
+                expect(index.bannerAdmin).toBe(admin);
+                expect(index.campaignAdmin).toBe(admin);
+                expect(index.customerAdmin).toBe(admin);
+                expect(index.pushAdmin).toBe(admin);
+                expect(index.websiteAdmin).toBe(admin);
+            })
+            .done(done);
+        });
+        
+        it('should be able to pass custom key and cert paths to each function', function(done) {
+            index.createClient('/key/path', '/cert/path')
+            .then(resolveSpy,rejectSpy)
+            .then(function(){
+                expect(resolveSpy).toHaveBeenCalled();
+                expect(banner.createAdmin).toHaveBeenCalledWith('/key/path', '/cert/path');
+                expect(campaign.createAdmin).toHaveBeenCalledWith('/key/path', '/cert/path');
+                expect(customer.createAdmin).toHaveBeenCalledWith('/key/path', '/cert/path');
+                expect(keyword.createAdmin).toHaveBeenCalledWith('/key/path', '/cert/path');
+                expect(push.createAdmin).toHaveBeenCalledWith('/key/path', '/cert/path');
+                expect(website.createAdmin).toHaveBeenCalledWith('/key/path', '/cert/path');
                 expect(index.bannerAdmin).toBe(admin);
                 expect(index.campaignAdmin).toBe(admin);
                 expect(index.customerAdmin).toBe(admin);
