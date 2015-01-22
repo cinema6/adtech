@@ -2,7 +2,7 @@ var q = require('q');
 function wrap (m,o){
     return function(){
         var args = Array.prototype.slice.call(arguments, 0);
-        return m.apply(args).then(function(r){
+        return m.apply(null, args).then(function(r){
             module.exports[o] = r; 
             return r;
         });

@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.0.3 (January 22, 2015)
+* [FIX]: Fix index to correctly pass custom key and cert paths
+
 ## v1.0.2 (January 21, 2015)
 * [FIX]: Add makePageList function to website admin
 
