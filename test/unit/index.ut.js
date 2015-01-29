@@ -9,6 +9,7 @@ describe('index',function(){
             customer    = require('../../lib/customer');
             keyword     = require('../../lib/keyword');
             push        = require('../../lib/push');
+            report      = require('../../lib/report');
             website     = require('../../lib/website');
             constants   = require('../../lib/constants');
             q           = require('q');
@@ -18,6 +19,7 @@ describe('index',function(){
             spyOn(customer,'createAdmin').andReturn(q(admin));
             spyOn(keyword,'createAdmin').andReturn(q(admin));
             spyOn(push,'createAdmin').andReturn(q(admin));
+            spyOn(report,'createAdmin').andReturn(q(admin));
             spyOn(website,'createAdmin').andReturn(q(admin));
             index   = require('../../index.js');
         }
@@ -77,6 +79,17 @@ describe('index',function(){
                 expect(resolveSpy).toHaveBeenCalled();
                 expect(push.createAdmin).toHaveBeenCalled();
                 expect(index.pushAdmin).toBe(admin);
+            })
+            .done(done);
+        });
+        
+        it('createReportAdmin is proxied',function(done){
+            index.createReportAdmin()
+            .then(resolveSpy,rejectSpy)
+            .then(function(){
+                expect(resolveSpy).toHaveBeenCalled();
+                expect(report.createAdmin).toHaveBeenCalled();
+                expect(index.reportAdmin).toBe(admin);
             })
             .done(done);
         });

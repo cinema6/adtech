@@ -1,4 +1,6 @@
 var adtech       = require('../index'),
+    request      = require('request'),
+    q            = require('q'),
     kCamp        = adtech.constants.ICampaign;
 
 function getCampaign(){
@@ -24,6 +26,118 @@ function getCampaignStatusValues(){
     );
     return adtech.campaignAdmin.getCampaignStatusValues(['6255177','6255627','9999999'],aove);
     //return adtech.campaignAdmin.getCampaignStatusValues(null,aove);
+};
+
+function getReportById(){
+    return adtech.reportAdmin.getReportById(311);
+};
+
+function requestEntityReport(){
+    var kconst = adtech.constants.IReportQueueEntry,
+        IReport = adtech.constants.IReport,
+        startDate = new Date(2014,11,1,0,0,0,0),
+        endDate   = new Date(2014,11,31,23,59,59,999),
+        stateNames = {};
+    stateNames[kconst.STATE_ENTERED] = 'entered';
+    stateNames[kconst.STATE_BUSY]    = 'busy';
+    stateNames[kconst.STATE_FINISHED] = 'finished';
+    stateNames[kconst.STATE_DELETED]  = 'deleted';
+    stateNames[kconst.STATE_FAILED]   = 'failed';
+    stateNames[kconst.STATE_WAITING_FOR_BRE] = 'waiting_for_bre';
+    stateNames[kconst.STATE_WAITING_FOR_SCHEDULER] = 'waiting for scheduler';
+
+    function requestReport(reportId){
+        console.log('request Entity Report type:',reportId);
+        return adtech.reportAdmin
+            .requestReportByEntities(reportId,startDate.toISOString(),endDate.toISOString(),
+                IReport.REPORT_ENTITY_TYPE_ADVERTISER, IReport.REPORT_CATEGORY_CAMPAIGN,
+                    [6241701,6241710]);
+    }
+
+    function getReportQueueEntryById(id){
+        console.log('request Report Queue Entry:',id);
+        return adtech.reportAdmin
+            .getReportQueueEntryById(id);
+    }
+
+    function downloadReport(entry){
+        console.log('Report Queue Entry state: ',stateNames[entry.state]);
+        if (entry.state === kconst.STATE_DELETED || entry.state === kconst.STATE_FAILED){
+            throw new Error('Invalid entry state!');
+        }
+
+        if (entry.state === kconst.STATE_FINISHED) {
+            var deferred = q.defer(), rqs;
+            console.log('REPORT AVAILABLE AT:',entry.resultURL + '&format=csv');
+            rqs = request(entry.resultURL + '&view=imp_viewcount&format=csv', function(err,res,body){
+                if (err){
+                    return deferred.reject(err);
+                }
+
+                return deferred.resolve(body);
+            });
+            return deferred.promise;
+        }
+
+        return q.delay(5000)
+            .then(function(){return getReportQueueEntryById(entry.id);})
+            .then(downloadReport);
+    }
+
+    return requestReport(561).then(downloadReport);
+};
+
+
+function requestNetworkReport(){
+    var kconst = adtech.constants.IReportQueueEntry,
+        startDate = new Date(2014,11,1,0,0,0,0),
+        endDate   = new Date(2014,11,31,23,59,59,999),
+        stateNames = {};
+    stateNames[kconst.STATE_ENTERED] = 'entered';
+    stateNames[kconst.STATE_BUSY]    = 'busy';
+    stateNames[kconst.STATE_FINISHED] = 'finished';
+    stateNames[kconst.STATE_DELETED]  = 'deleted';
+    stateNames[kconst.STATE_FAILED]   = 'failed';
+    stateNames[kconst.STATE_WAITING_FOR_BRE] = 'waiting_for_bre';
+    stateNames[kconst.STATE_WAITING_FOR_SCHEDULER] = 'waiting for scheduler';
+
+    function requestReport(reportId){
+        console.log('request Network Report type:',reportId);
+        return adtech.reportAdmin
+            .requestReport(reportId,startDate.toISOString(),endDate.toISOString());
+    }
+
+    function getReportQueueEntryById(id){
+        console.log('request Report Queue Entry:',id);
+        return adtech.reportAdmin
+            .getReportQueueEntryById(id);
+    }
+
+    function downloadReport(entry){
+        console.log('Report Queue Entry state: ',stateNames[entry.state]);
+        if (entry.state === kconst.STATE_DELETED || entry.state === kconst.STATE_FAILED){
+            throw new Error('Invalid entry state!');
+        }
+
+        if (entry.state === kconst.STATE_FINISHED) {
+            var deferred = q.defer(), rqs;
+            console.log('REPORT AVAILABLE AT:',entry.resultURL + '&format=csv');
+            rqs = request(entry.resultURL + '&format=csv', function(err,res,body){
+                if (err){
+                    return deferred.reject(err);
+                }
+
+                return deferred.resolve(body);
+            });
+            return deferred.promise;
+        }
+
+        return q.delay(5000)
+            .then(function(){return getReportQueueEntryById(entry.id);})
+            .then(downloadReport);
+    }
+
+    return requestReport(311).then(downloadReport);
 };
 
 function holdCampaign() {
@@ -82,16 +196,23 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return getCampaignStatus();
+//    return getReportById();
+    return requestEntityReport();
+//    return requestNetworkReport();
+//    return getCampaignStatus();
 //    return updatePlacementsInCampaigns();
 }
 
-adtech.createClient()
+adtech.createClient('/Users/howard/.ssh/adtech.key.prod','/Users/howard/.ssh/adtech.crt.prod')
 .then(doWork)
 .then(function(result){
-    console.log(JSON.stringify(result,null,3));
+    if (result.charAt(0) === '{') {
+        console.log(JSON.stringify(result,null,3));
+    } else {
+        console.log(result);
+    }
 })
 .catch(function(err){
-    console.log('Error:',err.stack);
+    console.log('Error:',err);
     process.exit(1);
 });

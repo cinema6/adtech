@@ -15,6 +15,7 @@ module.exports = {
     customerAdmin       : null,
     keywordAdmin        : null,
     pushAdmin           : null,
+    reportAdmin         : null,
     websiteAdmin        : null,
     
     AOVE                : require('./lib/aove'),
@@ -24,6 +25,7 @@ module.exports = {
     createCustomerAdmin : wrap(require('./lib/customer').createAdmin, 'customerAdmin'),
     createKeywordAdmin  : wrap(require('./lib/keyword').createAdmin, 'keywordAdmin'),
     createPushAdmin     : wrap(require('./lib/push').createAdmin,     'pushAdmin'),
+    createReportAdmin   : wrap(require('./lib/report').createAdmin,     'reportAdmin'),
     createWebsiteAdmin  : wrap(require('./lib/website').createAdmin,  'websiteAdmin'),
 
     createClient : function() {
