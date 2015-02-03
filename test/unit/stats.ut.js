@@ -1,4 +1,4 @@
-ddescribe('stats',function(){
+describe('stats',function(){
     var flush = true, stats, mockSUtils, mockClient;
     beforeEach(function(){
         if (flush) { for (var m in require.cache){ delete require.cache[m]; } flush = false; }
