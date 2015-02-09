@@ -59,6 +59,24 @@ describe('AOVE',function(){
                 }
             });
         });
+
+        it('BooleanExpression',function(){
+            var e = new AOVE.BooleanExpression('attr1',true);
+            expect(e.valueOf()).toEqual({
+                attributes : {
+                    'xsi:type' : 'hel:AttributeOperatorValueExpression'
+                },
+                expressions : nil,
+                attribute   : 'attr1',
+                operator    : '==',
+                value : {
+                    attributes : {
+                        'xsi:type' : 'xsd:boolean'
+                    },
+                    $value : true
+                }
+            });
+        });
     });
     
     describe('AOVE',function(){
