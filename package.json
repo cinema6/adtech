@@ -1,6 +1,6 @@
 {
   "name": "adtech",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Wrapper library for working with Adtech SOAP API.",
   "main": "index.js",
   "scripts": {
