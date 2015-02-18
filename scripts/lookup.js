@@ -39,8 +39,8 @@ function getReportById(){
 function requestEntityReport(){
     var kconst = adtech.constants.IReportQueueEntry,
         IReport = adtech.constants.IReport,
-        startDate = new Date(2014,11,1,0,0,0,0),
-        endDate   = new Date(2014,11,31,23,59,59,999),
+        startDate = new Date(2015,1,4,0,0,0,0),
+        endDate   = new Date(2015,1,8,23,59,59,999),
         stateNames = {};
     stateNames[kconst.STATE_ENTERED] = 'entered';
     stateNames[kconst.STATE_BUSY]    = 'busy';
@@ -55,7 +55,7 @@ function requestEntityReport(){
         return adtech.reportAdmin
             .requestReportByEntities(reportId,startDate.toISOString(),endDate.toISOString(),
                 IReport.REPORT_ENTITY_TYPE_ADVERTISER, IReport.REPORT_CATEGORY_CAMPAIGN,
-                    [6241701,6241710]);
+                    [6455871,6455872]);
     }
 
     function getReportQueueEntryById(id){
@@ -73,7 +73,7 @@ function requestEntityReport(){
         if (entry.state === kconst.STATE_FINISHED) {
             var deferred = q.defer(), rqs;
             console.log('REPORT AVAILABLE AT:',entry.resultURL + '&format=csv');
-            rqs = request(entry.resultURL + '&view=imp_viewcount&format=csv', function(err,res,body){
+            rqs = request(entry.resultURL + '&view=imp_viewcount&format=csv&devel=-9', function(err,res,body){
                 if (err){
                     return deferred.reject(err);
                 }
@@ -94,8 +94,8 @@ function requestEntityReport(){
 
 function requestNetworkReport(){
     var kconst = adtech.constants.IReportQueueEntry,
-        startDate = new Date(2014,11,1,0,0,0,0),
-        endDate   = new Date(2014,11,31,23,59,59,999),
+        startDate = new Date(2015,1,4,0,0,0,0),
+        endDate   = new Date(2015,1,8,23,59,59,999),
         stateNames = {};
     stateNames[kconst.STATE_ENTERED] = 'entered';
     stateNames[kconst.STATE_BUSY]    = 'busy';
@@ -200,16 +200,16 @@ function getOptimizerList(){
 }
 
 function doWork(){
-    return getCampaignStats();
+//    return getCampaignStats();
 //    return getReportById();
-//    return requestEntityReport();
+    return requestEntityReport();
 //    return requestNetworkReport();
 //    return getCampaignStatus();
 //    return updatePlacementsInCampaigns();
 }
 
-//adtech.createClient('/Users/howard/.ssh/adtech.key.prod','/Users/howard/.ssh/adtech.crt.prod')
-adtech.createClient()
+adtech.createClient('/Users/howard/.ssh/adtech.key.prod','/Users/howard/.ssh/adtech.crt.prod')
+//adtech.createClient()
 .then(doWork)
 .then(function(result){
     if (result.charAt(0) === '{') {
