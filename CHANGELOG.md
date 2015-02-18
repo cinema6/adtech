@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.1.0 (February 18, 2015)
+* [FIX]: Adding in report admin functionality
+
 ## v1.0.4 (February 9, 2015)
 * [FIX]: Add BooleanExpression to AOVE expressions
 
