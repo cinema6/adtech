@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.0.4 (February 9, 2015)
+* [FIX]: Add BooleanExpression to AOVE expressions
+
 ## v1.0.3 (January 22, 2015)
 * [FIX]: Fix index to correctly pass custom key and cert paths
 
