@@ -79,6 +79,81 @@ describe('AOVE',function(){
         });
     });
     
+    describe('ListExpressions', function() {
+        it('IntListExpression',function(){
+            var e = new AOVE.IntListExpression('attr1',[1, 2, 3]);
+            expect(e.valueOf()).toEqual({
+                attributes : {
+                    'xsi:type' : 'hel:AttributeOperatorValueExpression'
+                },
+                attribute   : 'attr1',
+                operator    : 'IN',
+                value : {
+                    attributes : {
+                        'xmlns:sys': 'http://systinet.com/containers/literal/ms.net',
+                        'xsi:type': 'sys:Collection'
+                    },
+                    Items: {
+                        attributes: { 'xmlns:cm': 'http://www.w3.org/2001/XMLSchema' },
+                        Item: [
+                            { attributes: { 'xsi:type': 'cm:int' }, $value: 1 },
+                            { attributes: { 'xsi:type': 'cm:int' }, $value: 2 },
+                            { attributes: { 'xsi:type': 'cm:int' }, $value: 3 },
+                        ]
+                    }
+                }
+            });
+        });
+        
+        it('LongListExpression',function(){
+            var e = new AOVE.LongListExpression('attr1',[12345, 23456]);
+            expect(e.valueOf()).toEqual({
+                attributes : {
+                    'xsi:type' : 'hel:AttributeOperatorValueExpression'
+                },
+                attribute   : 'attr1',
+                operator    : 'IN',
+                value : {
+                    attributes : {
+                        'xmlns:sys': 'http://systinet.com/containers/literal/ms.net',
+                        'xsi:type': 'sys:Collection'
+                    },
+                    Items: {
+                        attributes: { 'xmlns:cm': 'http://www.w3.org/2001/XMLSchema' },
+                        Item: [
+                            { attributes: { 'xsi:type': 'cm:long' }, $value: 12345 },
+                            { attributes: { 'xsi:type': 'cm:long' }, $value: 23456 }
+                        ]
+                    }
+                }
+            });
+        });
+        
+        it('StringListExpression',function(){
+            var e = new AOVE.StringListExpression('attr1',['val1', 'val2']);
+            expect(e.valueOf()).toEqual({
+                attributes : {
+                    'xsi:type' : 'hel:AttributeOperatorValueExpression'
+                },
+                attribute   : 'attr1',
+                operator    : 'IN',
+                value : {
+                    attributes : {
+                        'xmlns:sys': 'http://systinet.com/containers/literal/ms.net',
+                        'xsi:type': 'sys:Collection'
+                    },
+                    Items: {
+                        attributes: { 'xmlns:cm': 'http://www.w3.org/2001/XMLSchema' },
+                        Item: [
+                            { attributes: { 'xsi:type': 'cm:string' }, $value: 'val1' },
+                            { attributes: { 'xsi:type': 'cm:string' }, $value: 'val2' }
+                        ]
+                    }
+                }
+            });
+        });
+    });
+    
     describe('AOVE',function(){
         var filter, e1, e2;
         beforeEach(function(){

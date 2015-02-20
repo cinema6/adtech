@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.1.1 (February 20, 2015)
+* [FIX]: Add ListExpressions to AOVE lib
+
 ## v1.1.0 (February 18, 2015)
 * [FIX]: Adding in report admin functionality
 
