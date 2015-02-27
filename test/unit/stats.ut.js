@@ -19,7 +19,9 @@ describe('stats',function(){
         expect(args[1]).toEqual(mockCert);
         expect(args[2]).toEqual(stats);
         expect(args[3]).toEqual([
-            'getCampaignStatisticsByCampaignId'
+            'getCampaignStatisticsByCampaignId',
+            'getPlacementStatisticsByPlacementId',
+            'getWebsiteStatisticsByWebsiteId'
         ]);
     });
     
@@ -35,19 +37,32 @@ describe('stats',function(){
         expect(args[2]).toEqual(key);
         expect(args[3]).toEqual(cert);
     });
-    
-    it('getCampaignStatisticsByCampaignId', function(){
-        stats.getCampaignStatisticsByCampaignId(mockClient,1);
-        expect(mockSUtils.getObject)
-            .toHaveBeenCalledWith('getCampaignStatisticsByCampaignId',['camId'],[mockClient,
-                {
-                    attributes : {
-                        'xmlns:xsd' : 'http://www.w3.org/2001/XMLSchema',
-                        'xsi:type'  : 'xsd:long'
-                    },
-                    $value : 1
-                }
-            ]);
+
+    describe('method',function(){
+        beforeEach(function(){
+            spyOn(stats,'xmlRequest');
+        });
+
+        it('getCampaignStatisticsByCampaignId',function(){
+            stats.getCampaignStatisticsByCampaignId(mockClient,111);
+            expect(stats.xmlRequest).toHaveBeenCalledWith(
+                mockClient,'getCampaignStatisticsByCampaignId','camId',111
+            );
+        });
     });
+
+//    it('getCampaignStatisticsByCampaignId', function(){
+//        stats.getCampaignStatisticsByCampaignId(mockClient,1);
+//        expect(mockSUtils.getObject)
+//            .toHaveBeenCalledWith('getCampaignStatisticsByCampaignId',['camId'],[mockClient,
+//                {
+//                    attributes : {
+//                        'xmlns:xsd' : 'http://www.w3.org/2001/XMLSchema',
+//                        'xsi:type'  : 'xsd:long'
+//                    },
+//                    $value : 1
+//                }
+//            ]);
+//    });
 });
 

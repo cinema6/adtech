@@ -19,8 +19,19 @@ function getCampaignStatus() {
     return adtech.campaignAdmin.getCampaignStatusValues(['6293522','6262256']);
 }
 
+function getCampaignStatisticsIdList(){
+    return adtech.statsAdmin.getCampaignStatisticsIdList();
+}
 function getCampaignStats(){
-    return adtech.statsAdmin.getCampaignStatisticsByCampaignId(6434392);
+    return adtech.statsAdmin.getCampaignStatisticsByCampaignId(6545600);
+}
+
+function getPlacementStats(){
+    return adtech.statsAdmin.getPlacementStatisticsByPlacementId(3492067);
+}
+
+function getWebsiteStats(){
+    return adtech.statsAdmin.getWebsiteStatisticsByWebsiteId(234887);
 }
 
 function getCampaignStatusValues(){
@@ -200,9 +211,12 @@ function getOptimizerList(){
 }
 
 function doWork(){
+    return getWebsiteStats();
+//    return getPlacementStats();
+//    return getCampaignStatisticsIdList();
 //    return getCampaignStats();
 //    return getReportById();
-    return requestEntityReport();
+//    return requestEntityReport();
 //    return requestNetworkReport();
 //    return getCampaignStatus();
 //    return updatePlacementsInCampaigns();
@@ -212,11 +226,7 @@ adtech.createClient('/Users/howard/.ssh/adtech.key.prod','/Users/howard/.ssh/adt
 //adtech.createClient()
 .then(doWork)
 .then(function(result){
-    if (result.charAt(0) === '{') {
-        console.log(JSON.stringify(result,null,3));
-    } else {
-        console.log(result);
-    }
+    console.log(result);
 })
 .catch(function(err){
     console.log('Error:',err);
