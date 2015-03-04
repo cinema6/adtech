@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.2.0 (March 4, 2015)
+* [FEATURE]: Added stats admin functionality for Campaigns and Placements
+
 ## v1.1.1 (February 20, 2015)
 * [FIX]: Add ListExpressions to AOVE lib
 
