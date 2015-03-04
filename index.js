@@ -20,6 +20,7 @@ module.exports = {
     websiteAdmin        : null,
     
     AOVE                : require('./lib/aove'),
+    BoolExpression      : require('./lib/boolexpr'),
     constants           : require('./lib/constants'),
     createBannerAdmin   : wrap(require('./lib/banner').createAdmin,   'bannerAdmin'),
     createCampaignAdmin : wrap(require('./lib/campaign').createAdmin, 'campaignAdmin'),
