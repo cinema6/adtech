@@ -28,8 +28,8 @@ function getCampaignStatisticsIdList(){
 }
 function getCampaignStatisticsList(){
     var boolExpr = new adtech.BoolExpression();
-    //var exp = new adtech.AOVE.LongExpression('todaysImps',100,'>');
-    var exp = new adtech.AOVE.LongListExpression('campaignId',[99999,88888]);
+    var exp = new adtech.AOVE.LongExpression('todaysImps',100,'>');
+    //var exp = new adtech.AOVE.LongListExpression('campaignId',[99999,88888]);
     boolExpr.addExpression(exp);
     return adtech.statsAdmin.getCampaignStatisticsList(null,null,boolExpr);
 }
@@ -227,8 +227,8 @@ function getOptimizerList(){
 function doWork(){
 //    return getPlacementStats();
 //    return getCampaign();
-//    return getCampaignStatisticsList();
-    return getPlacementStatisticsList();
+    return getCampaignStatisticsList();
+//    return getPlacementStatisticsList();
 //    return getCampaignStatisticsIdList();
 //    return getCampaignStats();
 //    return getReportById();

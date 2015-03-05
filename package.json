@@ -9,7 +9,7 @@
   "author": "Howard Engelhart",
   "license": "ISC",
   "dependencies": {
-    "soap": "git://github.com/vpulim/node-soap.git",
+    "soap": "git://github.com/cinema6/node-soap.git#v0.8.0",
     "q": "^1.0.1"
   },
   "devDependencies": {
