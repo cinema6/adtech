@@ -4,7 +4,7 @@ var adtech       = require('../index'),
     kCamp        = adtech.constants.ICampaign;
 
 function getCampaign(){
-    return adtech.campaignAdmin.getCampaignById(6262256);
+    return adtech.campaignAdmin.getCampaignById(6518757);
 }
 
 function getCustomerList(){
@@ -19,8 +19,33 @@ function getCampaignStatus() {
     return adtech.campaignAdmin.getCampaignStatusValues(['6293522','6262256']);
 }
 
+function getCampaignStatisticsIdList(){
+    var boolExpr = new adtech.BoolExpression();
+    var exp = new adtech.AOVE.LongExpression('todaysImps',100,'>');
+    //var exp = new adtech.AOVE.LongListExpression('campaignId',[99999,88888]);
+    boolExpr.addExpression(exp);
+    return adtech.statsAdmin.getCampaignStatisticsIdList(null,null,boolExpr);
+}
+function getCampaignStatisticsList(){
+    var boolExpr = new adtech.BoolExpression();
+    //var exp = new adtech.AOVE.LongExpression('todaysImps',100,'>');
+    var exp = new adtech.AOVE.LongListExpression('campaignId',[99999,88888]);
+    boolExpr.addExpression(exp);
+    return adtech.statsAdmin.getCampaignStatisticsList(null,null,boolExpr);
+}
 function getCampaignStats(){
-    return adtech.statsAdmin.getCampaignStatisticsByCampaignId(6434392);
+    return adtech.statsAdmin.getCampaignStatisticsByCampaignId(6410434);
+}
+
+function getPlacementStats(){
+    return adtech.statsAdmin.getPlacementStatisticsByPlacementId(3492067);
+}
+function getPlacementStatisticsList(){
+    var boolExpr = new adtech.BoolExpression();
+    var exp = new adtech.AOVE.LongExpression('todaysImps',100,'>');
+//    var exp = new adtech.AOVE.LongListExpression('placementId',[3481880,3492067,3481901]);
+    boolExpr.addExpression(exp);
+    return adtech.statsAdmin.getPlacementStatisticsList(null,null,boolExpr);
 }
 
 function getCampaignStatusValues(){
@@ -200,9 +225,14 @@ function getOptimizerList(){
 }
 
 function doWork(){
+//    return getPlacementStats();
+//    return getCampaign();
+//    return getCampaignStatisticsList();
+    return getPlacementStatisticsList();
+//    return getCampaignStatisticsIdList();
 //    return getCampaignStats();
 //    return getReportById();
-    return requestEntityReport();
+//    return requestEntityReport();
 //    return requestNetworkReport();
 //    return getCampaignStatus();
 //    return updatePlacementsInCampaigns();
@@ -212,11 +242,7 @@ adtech.createClient('/Users/howard/.ssh/adtech.key.prod','/Users/howard/.ssh/adt
 //adtech.createClient()
 .then(doWork)
 .then(function(result){
-    if (result.charAt(0) === '{') {
-        console.log(JSON.stringify(result,null,3));
-    } else {
-        console.log(result);
-    }
+    console.log(result);
 })
 .catch(function(err){
     console.log('Error:',err);
