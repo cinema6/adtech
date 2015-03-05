@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.3.0 (March 5, 2015)
+* [FEATURE]: Now uses cinema6/node-soap, tagged version v0.8.0
+
 ## v1.2.0 (March 4, 2015)
 * [FEATURE]: Added stats admin functionality for Campaigns and Placements
 
