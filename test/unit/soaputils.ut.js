@@ -468,6 +468,7 @@ describe('soaputils',function(){
 
             spyOn(mockFs,'readFileSync');
             spyOn(mockSoap,'createClient');
+            spyOn(mockSoap, 'ClientSSLSecurity').andReturn('fakeSSLSecurity');
         });
 
         it('should resolve with an ssl client if succeeds',function(done){
@@ -501,8 +502,7 @@ describe('soaputils',function(){
                 .then(function(){
                     expect(resolveSpy).toHaveBeenCalledWith(mockClient);
                     expect(rejectSpy).not.toHaveBeenCalled(); 
-                    expect(mockFs.readFileSync.calls[0].args[0]).toEqual('/.ssh/adtech.key');
-                    expect(mockFs.readFileSync.calls[1].args[0]).toEqual('/.ssh/adtech.crt');
+                    expect(mockSoap.ClientSSLSecurity).toHaveBeenCalledWith('/.ssh/adtech.key', '/.ssh/adtech.crt');
                 })
                 .done(done);
         });
