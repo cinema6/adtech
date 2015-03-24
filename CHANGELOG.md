@@ -1,5 +1,8 @@
 # adtech Changelog
 
+## v1.3.1 (March 23, 2015)
+* [FIX]: Add constants for campaign `frequencyType`
+
 ## v1.3.0 (March 5, 2015)
 * [FEATURE]: Now uses cinema6/node-soap, tagged version v0.8.0
 
