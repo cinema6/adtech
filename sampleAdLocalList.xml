@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<e:Envelope
+ xmlns:wn8="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/AdLocalManagement_v3/"
+ xmlns:wn7="http://systinet.com/xsd/SchemaTypes/"
+ xmlns:d="http://www.w3.org/2001/XMLSchema"
+ xmlns:e="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:wn5="http://systinet.com/wsdl/java/lang/"
+ xmlns:wn6="http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/"
+ xmlns:wn3="http://systinet.com/containers/literal/ms.net"
+ xmlns:wn4="http://idoox.com/package/"
+ xmlns:wn1="http://systinet.com/wsdl/de/adtech/helios/"
+ xmlns:wn2="http://idoox.com/interface"
+ xmlns:wn0="http://systinet.com/wsdl/de/adtech/helios/AdLocalManagement/"
+ xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+<e:Header>
+<wn2:instance>
+<wn2:setId>ge-ws-ext004.us-ec.adtech.com:2015.08.13 06:21:51 GMT:2C7A542084199600:1DE539</wn2:setId>
+</wn2:instance>
+</e:Header>
+<e:Body>
+    <wn7:ArrayOfAdLocalTarget_Response i:type="wn0:ArrayOfAdLocalTarget">
+        <wn0:AdLocalTarget i:type="wn0:AdLocalTarget">
+            <wn0:campaignId i:type="d:long">7289572</wn0:campaignId>
+            <wn0:countryId i:type="d:long">1</wn0:countryId>
+            <wn0:countryName i:type="d:string">USA</wn0:countryName>
+            <wn0:subGroupId i:type="d:long">106548</wn0:subGroupId>
+            <wn0:subGroupMemberId i:type="d:long">38</wn0:subGroupMemberId>
+            <wn0:subGroupMemberName i:type="d:string">baltimore</wn0:subGroupMemberName>
+            <wn0:subGroupName i:type="d:string">subgroup.usa.dma</wn0:subGroupName>
+            <wn0:zipCodes i:type="d:string"></wn0:zipCodes>
+        </wn0:AdLocalTarget>
+        <wn0:AdLocalTarget i:type="wn0:AdLocalTarget">
+            <wn0:campaignId i:type="d:long">7289572</wn0:campaignId>
+            <wn0:countryId i:type="d:long">1</wn0:countryId>
+            <wn0:countryName i:type="d:string">USA</wn0:countryName>
+            <wn0:subGroupId i:type="d:long">322</wn0:subGroupId>
+            <wn0:subGroupMemberId i:type="d:long">104677</wn0:subGroupMemberId>
+            <wn0:subGroupMemberName i:type="d:string">arizona</wn0:subGroupMemberName>
+            <wn0:subGroupName i:type="d:string">States</wn0:subGroupName>
+            <wn0:zipCodes i:type="d:string"></wn0:zipCodes>
+        </wn0:AdLocalTarget>
+        <wn0:AdLocalTarget i:type="wn0:AdLocalTarget">
+            <wn0:campaignId i:type="d:long">7289572</wn0:campaignId>
+            <wn0:countryId i:type="d:long">1</wn0:countryId>
+            <wn0:countryName i:type="d:string">USA</wn0:countryName>
+            <wn0:subGroupId i:type="d:long">322</wn0:subGroupId>
+            <wn0:subGroupMemberId i:type="d:long">104679</wn0:subGroupMemberId>
+            <wn0:subGroupMemberName i:type="d:string">california</wn0:subGroupMemberName>
+            <wn0:subGroupName i:type="d:string">States</wn0:subGroupName>
+            <wn0:zipCodes i:type="d:string"></wn0:zipCodes>
+        </wn0:AdLocalTarget>
+        <wn0:AdLocalTarget i:type="wn0:AdLocalTarget">
+            <wn0:campaignId i:type="d:long">7289572</wn0:campaignId>
+            <wn0:countryId i:type="d:long">1</wn0:countryId>
+            <wn0:countryName i:type="d:string">USA</wn0:countryName>
+            <wn0:subGroupId i:type="d:long">106548</wn0:subGroupId>
+            <wn0:subGroupMemberId i:type="d:long">208</wn0:subGroupMemberId>
+            <wn0:subGroupMemberName i:type="d:string">baton rouge</wn0:subGroupMemberName>
+            <wn0:subGroupName i:type="d:string">subgroup.usa.dma</wn0:subGroupName>
+            <wn0:zipCodes i:type="d:string"></wn0:zipCodes>
+        </wn0:AdLocalTarget>
+    </wn7:ArrayOfAdLocalTarget_Response>
+</e:Body>
+</e:Envelope>

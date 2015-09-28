@@ -1,0 +1,215 @@
+{
+  "attributes": {
+    "i:type": "wn0:ArrayOfAdLocalTarget"
+  },
+  "AdLocalTarget": [
+    {
+      "attributes": {
+        "i:type": "wn0:AdLocalTarget"
+      },
+      "campaignId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "7289572"
+      },
+      "countryId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "1"
+      },
+      "countryName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "USA"
+      },
+      "subGroupId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "106548"
+      },
+      "subGroupMemberId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "38"
+      },
+      "subGroupMemberName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "baltimore"
+      },
+      "subGroupName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "subgroup.usa.dma"
+      },
+      "zipCodes": {
+        "attributes": {
+          "i:type": "d:string"
+        }
+      }
+    },
+    {
+      "attributes": {
+        "i:type": "wn0:AdLocalTarget"
+      },
+      "campaignId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "7289572"
+      },
+      "countryId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "1"
+      },
+      "countryName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "USA"
+      },
+      "subGroupId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "322"
+      },
+      "subGroupMemberId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "104677"
+      },
+      "subGroupMemberName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "arizona"
+      },
+      "subGroupName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "States"
+      },
+      "zipCodes": {
+        "attributes": {
+          "i:type": "d:string"
+        }
+      }
+    },
+    {
+      "attributes": {
+        "i:type": "wn0:AdLocalTarget"
+      },
+      "campaignId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "7289572"
+      },
+      "countryId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "1"
+      },
+      "countryName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "USA"
+      },
+      "subGroupId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "322"
+      },
+      "subGroupMemberId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "104679"
+      },
+      "subGroupMemberName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "california"
+      },
+      "subGroupName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "States"
+      },
+      "zipCodes": {
+        "attributes": {
+          "i:type": "d:string"
+        }
+      }
+    },
+    {
+      "attributes": {
+        "i:type": "wn0:AdLocalTarget"
+      },
+      "campaignId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "7289572"
+      },
+      "countryId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "1"
+      },
+      "countryName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "USA"
+      },
+      "subGroupId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "106548"
+      },
+      "subGroupMemberId": {
+        "attributes": {
+          "i:type": "d:long"
+        },
+        "$value": "208"
+      },
+      "subGroupMemberName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "baton rouge"
+      },
+      "subGroupName": {
+        "attributes": {
+          "i:type": "d:string"
+        },
+        "$value": "subgroup.usa.dma"
+      },
+      "zipCodes": {
+        "attributes": {
+          "i:type": "d:string"
+        }
+      }
+    }
+  ]
+}

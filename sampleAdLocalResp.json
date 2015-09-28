@@ -1,0 +1,60 @@
+{
+    "AdLocalTarget": [
+        {
+            "campaignId": 7289572,
+            "countryId": 1,
+            "countryName": "USA",
+            "subGroupId": 322,
+            "subGroupMemberId": 1040133,
+            "subGroupMemberName": "Millburn-NJ",
+            "subGroupName": "subgroup.towns",
+            "zipCodes": ""
+        },
+        {
+            "campaignId": 7289572,
+            "countryId": 1,
+            "countryName": "USA",
+            "subGroupId": 322,
+            "subGroupMemberId": 104675,
+            "subGroupMemberName": "alabama",
+            "subGroupName": "States",
+            "zipCodes": ""
+        },
+        {
+            "campaignId": 7289572,
+            "countryId": 1,
+            "countryName": "USA",
+            "subGroupId": 322,
+            "subGroupMemberId": 104705,
+            "subGroupMemberName": "new jersey",
+            "subGroupName": "States",
+            "zipCodes": ""
+        },
+        {
+            "campaignId": 7289572,
+            "countryId": 1,
+            "countryName": "USA",
+            "subGroupId": 106548,
+            "subGroupMemberId": 140,
+            "subGroupMemberName": "chicago",
+            "subGroupName": "subgroup.usa.dma",
+            "zipCodes": ""
+        },
+        {
+            "campaignId": 7289572,
+            "countryId": 1,
+            "countryName": "USA",
+            "subGroupId": 106548,
+            "subGroupMemberId": 27,
+            "subGroupMemberName": "new york",
+            "subGroupName": "subgroup.usa.dma",
+            "zipCodes": ""
+        },
+        {
+            "campaignId": 7289572,
+            "countryId": 122,
+            "countryName": "ARUBA",
+            "zipCodes": ""
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+<soap:Envelope
+ xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:map="http://systinet.com/mapping/"
+ xmlns:ns0="http://systinet.com/xsd/SchemaTypes/"
+ xmlns:tns="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/AdLocalManagement_v3/"
+ xmlns:xns4="http://systinet.com/wsdl/de/adtech/helios/AdLocalManagement/"
+ xmlns:xns5="http://systinet.com/wsdl/de/adtech/webservices/helios/lowLevel/AdLocalManagement_v3/"
+ xmlns:xns6="http://systinet.com/wsdl/de/adtech/helios/"
+ xmlns:xns7="http://systinet.com/wsdl/de/adtech/helios/CampaignManagement/"
+ xmlns:xns8="http://systinet.com/containers/literal/ms.net"
+ xmlns:xns9="http://systinet.com/wsdl/java/lang/">
+<soap:Header>
+</soap:Header>
+<soap:Body>
+    <ns0:alts>
+        <tns:AdLocalTarget>
+            <ns0:campaignId>7289572</ns0:campaignId>
+            <ns0:countryId>1</ns0:countryId>
+            <ns0:countryName>USA</ns0:countryName>
+            <ns0:subGroupId>106548</ns0:subGroupId>
+            <ns0:subGroupMemberId>38</ns0:subGroupMemberId>
+            <ns0:subGroupMemberName>baltimore</ns0:subGroupMemberName>
+            <ns0:subGroupName>subgroup.usa.dma</ns0:subGroupName>
+        </tns:AdLocalTarget>
+        <tns:AdLocalTarget>
+            <ns0:campaignId>7289572</ns0:campaignId>
+            <ns0:countryId>1</ns0:countryId>
+            <ns0:countryName>USA</ns0:countryName>
+            <ns0:subGroupId>322</ns0:subGroupId>
+            <ns0:subGroupMemberId>104677</ns0:subGroupMemberId>
+            <ns0:subGroupMemberName>arizona</ns0:subGroupMemberName>
+            <ns0:subGroupName>States</ns0:subGroupName>
+        </tns:AdLocalTarget>
+    </ns0:alts>
+    <ns0:campaignId>7289572</ns0:campaignId>
+</soap:Body>
+</soap:Envelope>
